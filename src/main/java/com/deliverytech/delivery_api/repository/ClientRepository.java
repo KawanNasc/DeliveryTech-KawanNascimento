@@ -1,5 +1,42 @@
 package com.deliverytech.delivery_api.repository;
 
-public class ClientRepository {
-    
+import com.deliverytech.delivery_api.model.Client;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface ClientRepository extends JpaRepository<Client, Long> {
+
+    // Buscar clientes p/ e-mail (Método derivado)
+    Optional<Client> findByEmail(String email);
+
+    // Verificar se o e-amil já existe
+    boolean existsByEmail(String email);
+
+    // Buscar clientes ativos
+    List<Client> findByActiveTrue();
+
+    // Buscar clientes p/ nome (Contendo)
+    List<Client> findByNameContainingIgnoreCase(String name);
+
+    // Buscar clientes p/ telefone
+    Optional<Client> findByPhone(String phone);
+
+    // Query personalizada - Clientes c/ pedidos
+    @Query("SELECT DISTINCT c FROM Client c JOIN c.requests p WHERE c.active = true")
+    List<Client> findClientsWithRequests();
+
+    // Query nativa - Clientes p/ cidade
+    @Query(value = "SELECT * FROM clients WHERE address LIKE %:city% AND active = true", nativeQuery = true)
+    List<Client> findByCity(@Param("city") String city);
+
+    // Contar clientes ativos
+    @Query("SELECT COUNT(c) FROM Client c WHERE c.active = true")
+    Long countActiveClients();
 }
