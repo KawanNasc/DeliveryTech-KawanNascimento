@@ -34,4 +34,20 @@ public class Request {
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
     private List<ItemRequest> itemsRequest;
+
+    public void addItem(ItemRequest item) {
+        throw new UnsupportedOperationException("Unimplemented method 'addItem'");
+    }
+
+    public void confirm() {
+        throw new UnsupportedOperationException("Unimplemented method 'confirm'");
+    }
+
+    public String getNote() {
+        throw new UnsupportedOperationException("Unimplemented method 'getNote'");
+    }
+
+    public void setNote(String string) {
+        throw new UnsupportedOperationException("Unimplemented method 'setNote'");
+    }
 }

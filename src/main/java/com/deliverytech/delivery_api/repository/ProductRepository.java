@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    
+
     // Buscar orodutos p/ restaurante
     List<Product> findByRestaurantAndAvailableTrue(Restaurant restaurant);
 
@@ -34,6 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Ordenar p/ preço
     List<Product> findByAvailableTrueOrderByPriceAsc();
+
     List<Product> findByAvailableTrueOrderByPriceDesc();
 
     // Query personalizada - Produtos mais vendidos
@@ -41,8 +42,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findTopSellingProducts();
 
     // Buscar p/ restaurante e categoria
-    @Query("SELECT p FROM product p WHERE p.restaurant.id = :restaurantId " + "AND p.category = :category  AND p.available = true")
-    List<Product> findByRestaurantAndCategory(@Param("restaurantId") Long restaurantId, @Param("category") String category);
+    @Query("SELECT p FROM product p WHERE p.restaurant.id = :restaurantId "
+            + "AND p.category = :category  AND p.available = true")
+    List<Product> findByRestaurantAndCategory(@Param("restaurantId") Long restaurantId,
+            @Param("category") String category);
 
     // Contar produtos p/ restaurante
     @Query("SELECT COUNT (p) FROM product p WHERE p.restaurant.id = restaurantId AND p.available = true")

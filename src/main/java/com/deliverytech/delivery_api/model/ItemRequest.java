@@ -14,6 +14,14 @@ public class ItemRequest {
     private BigDecimal unitaryPrice;
     private BigDecimal subtotal;
 
+    public void calculateSubtotal() {
+        if (this.unitaryPrice != null && this.quantity > 0) {
+            this.subtotal = this.unitaryPrice.multiply(BigDecimal.valueOf(this.quantity));
+        } else {
+            this.subtotal = BigDecimal.ZERO;
+        }
+    }
+
     @ManyToOne
     @JoinColumn(name = "request_id")
     private Request requests;

@@ -19,7 +19,7 @@ import java.util.Map;
  * Basic Controller which is called for unhandled errors
  */
 @Controller
-public class AppErrorController implements ErrorController{
+public class AppErrorController implements ErrorController {
 
     /**
      * Error Attributes in the Application
@@ -30,6 +30,7 @@ public class AppErrorController implements ErrorController{
 
     /**
      * Controller for the Error Controller
+     * 
      * @param errorAttributes
      */
     public AppErrorController(ErrorAttributes errorAttributes) {
@@ -38,6 +39,7 @@ public class AppErrorController implements ErrorController{
 
     /**
      * Supports the HTML Error View
+     * 
      * @param request
      * @return
      */
@@ -48,6 +50,7 @@ public class AppErrorController implements ErrorController{
 
     /**
      * Supports other formats like JSON, XML
+     * 
      * @param request
      * @return
      */
@@ -68,7 +71,6 @@ public class AppErrorController implements ErrorController{
         return ERROR_PATH;
     }
 
-
     private boolean getTraceParameter(HttpServletRequest request) {
         String parameter = request.getParameter("trace");
         if (parameter == null) {
@@ -78,11 +80,11 @@ public class AppErrorController implements ErrorController{
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request,
-                                                   boolean includeStackTrace) {
+            boolean includeStackTrace) {
         WebRequest webRequest = new ServletWebRequest((jakarta.servlet.http.HttpServletRequest) request);
-        ErrorAttributeOptions options = includeStackTrace ?
-                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) :
-                ErrorAttributeOptions.defaults();
+        ErrorAttributeOptions options = includeStackTrace
+                ? ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE)
+                : ErrorAttributeOptions.defaults();
         return this.errorAttributes.getErrorAttributes(webRequest, options);
     }
 
@@ -92,8 +94,7 @@ public class AppErrorController implements ErrorController{
         if (statusCode != null) {
             try {
                 return HttpStatus.valueOf(statusCode);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

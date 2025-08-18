@@ -16,9 +16,11 @@ import java.util.List;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    
+
+    Request findByNumberRequest(String numberRequest);
+
     // Buscar pedidos p/cliente
-    List<Request> findByClientorderByDateRequestDesc(Client client);
+    List<Request> findByClientOrderByDateRequestDesc(Client client);
 
     // Buscar pedidos p/ id de cliente
     List<Request> findByClientIdOrderByDateRequestDesc(Long clientId);
@@ -42,10 +44,12 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Object[]> countRequestsByStatusRequest();
 
     // Pedidos pendentes (P/ dashboard)
-    @Query("SELECT p FROM Request p WHERE p.statusRequest IN ('PENDENTE', 'CONFIRMADO', 'PREPARANDO') " + "ORDER BY p.dateRequest ASC")
+    @Query("SELECT p FROM Request p WHERE p.statusRequest IN ('PENDENTE', 'CONFIRMADO', 'PREPARANDO') "
+            + "ORDER BY p.dateRequest ASC")
     List<Request> findOngoingRequests();
 
     // Valor total de vendas p/ período
-    @Query("SELECT SUM(p.totalValue) FROM Request p WHERE p.dataRequest BETWEEN :start AND :finish " + "AND p.statusRequest NOT IN ('CANCELADO')")
+    @Query("SELECT SUM(p.totalValue) FROM Request p WHERE p.dateRequest BETWEEN :start AND :finish "
+            + "AND p.statusRequest NOT IN ('CANCELADO')")
     BigDecimal calculateSellsPerTime(@Param("start") LocalDateTime start, @Param("finish") LocalDateTime finish);
 }
