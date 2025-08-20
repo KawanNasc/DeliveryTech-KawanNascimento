@@ -16,7 +16,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     // Buscar clientes p/ e-mail (Método derivado)
     Optional<Client> findByEmail(String email);
 
-    // Verificar se o e-amil já existe
+    // Verificar se o e-mail já existe
     boolean existsByEmail(String email);
 
     // Buscar clientes ativos
@@ -28,15 +28,15 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     // Buscar clientes p/ telefone
     Optional<Client> findByPhone(String phone);
 
-    // Query personalizada - Clientes c/ pedidos
-    @Query("SELECT DISTINCT c FROM Client c JOIN c.requests p WHERE c.active = true")
-    List<Client> findClientsWithRequests();
+    // // Query personalizada - Clientes c/ pedidos
+    // @Query("SELECT DISTINCT c FROM Client c JOIN c.requests p WHERE c.active = true")
+    // List<Client> findClientsWithRequests();
 
-    // Query nativa - Clientes p/ cidade
-    @Query(value = "SELECT * FROM clients WHERE address LIKE %:city% AND active = true", nativeQuery = true)
-    List<Client> findByCity(@Param("city") String city);
+    // // Query nativa - Clientes p/ cidade
+    // @Query(value = "SELECT * FROM client WHERE address LIKE %:city% AND active = true", nativeQuery = true)
+    // List<Client> findByCity(@Param("city") String city);
 
-    // Contar clientes ativos
-    @Query("SELECT COUNT(c) FROM Client c WHERE c.active = true")
-    Long countActiveClients();
+    // // Contar clientes ativos
+    // @Query("SELECT COUNT(name) FROM Client WHERE active = true")
+    // Long countActiveClients();
 }

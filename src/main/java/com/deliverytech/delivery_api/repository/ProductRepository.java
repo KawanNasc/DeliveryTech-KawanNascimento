@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // Buscar orodutos p/ restaurante
+    // Buscar produtos p/ restaurante
     List<Product> findByRestaurantAndAvailableTrue(Restaurant restaurant);
 
     // Buscar produtos p/ ID do restaurante
@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryAndAvailableTrue(String category);
 
     // Buscar p/ nome contendo
-    List<Product> findByNameContainingignoreCaseAndAvailableTrue(String name);
+    List<Product> findByNameContainingIgnoreCaseAndAvailableTrue(String name);
 
     // Buscar p/ faixa de preço
     List<Product> findByPriceBetweenAndAvailableTrue(BigDecimal priceMin, BigDecimal priceMax);
@@ -37,17 +37,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByAvailableTrueOrderByPriceDesc();
 
-    // Query personalizada - Produtos mais vendidos
-    @Query("SELECT p FROM product p JOIN p.itemsRequest ip " + "GROUP BY p ORDER BY COUNT(ip) DESC")
-    List<Product> findTopSellingProducts();
+//     // Query personalizada - Produtos mais vendidos
+//     @Query("SELECT p FROM Product")
+//     List<Product> findTopSellingProducts();
 
-    // Buscar p/ restaurante e categoria
-    @Query("SELECT p FROM product p WHERE p.restaurant.id = :restaurantId "
-            + "AND p.category = :category  AND p.available = true")
-    List<Product> findByRestaurantAndCategory(@Param("restaurantId") Long restaurantId,
-            @Param("category") String category);
+//     // Buscar p/ restaurante e categoria
+//     @Query("SELECT * FROM Product WHERE restaurant.id = :restaurantId "
+//             + "AND category = :category AND available = true")
+//     List<Product> findByRestaurantAndCategory(@Param("restaurantId") Long restaurantId,
+//             @Param("category") String category);
 
-    // Contar produtos p/ restaurante
-    @Query("SELECT COUNT (p) FROM product p WHERE p.restaurant.id = restaurantId AND p.available = true")
-    Long countByRestaurantId(@Param("restaurantId") Long restaurantId);
+//     // Contar produtos p/ restaurante
+//     @Query("SELECT COUNT (name) FROM Product WHERE restaurant.id = :restaurantId AND available = true")
+//     Long countByRestaurantId(@Param("restaurantId") Long restaurantId);
 }

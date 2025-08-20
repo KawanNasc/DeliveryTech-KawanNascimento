@@ -17,8 +17,6 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    Request findByNumberRequest(String numberRequest);
-
     // Buscar pedidos p/cliente
     List<Request> findByClientOrderByDateRequestDesc(Client client);
 
@@ -26,30 +24,35 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByClientIdOrderByDateRequestDesc(Long clientId);
 
     // Buscar p/ status
-    List<Request> findByStatusOrderByDateRequestDesc(StatusRequest statusrequest);
+    List<Request> findByStatusRequestOrderByDateRequestDesc(StatusRequest statusRequest);
 
     // Buscar p/ n° do pedido
     List<Request> findByDateRequestBetweenOrderByDateRequestDesc(LocalDateTime start, LocalDateTime finish);
 
-    // Buscar pedidos do dia
-    @Query("SELECT p FROM Request p WHERE DATE(p.dateRequest) = CURRENT_DATE ORDER BY p.dateRequest DESC")
-    List<Request> findDailyRequests();
+    // // Buscar pedidos do dia
+    // @Query("SELECT p FROM Request p WHERE DATE(p.dateRequest) = CURRENT_DATE
+    // ORDER BY p.dateRequest DESC")
+    // List<Request> findDailyRequests();
 
-    // Buscar pedidos p/ restaurante
-    @Query("SELECT p FROM Request p WHERE p.restaurant.id = :restaurantId ORDER BY p.dateRequest DESC")
-    List<Request> findByRestaurantId(@Param("restaurantId") Long restaurantId);
+    // // Buscar pedidos p/ restaurante
+    // @Query("SELECT p FROM Request p WHERE p.restaurant.id = :restaurantId ORDER
+    // BY p.dateRequest DESC")
+    // List<Request> findByRestaurantId(@Param("restaurantId") Long restaurantId);
 
-    // Relatório - Pedidos p/ status
-    @Query("SELECT p.statusRequest, COUNT(p) FROM Request p GROUP BY p.status")
-    List<Object[]> countRequestsByStatusRequest();
+    // // Relatório - Pedidos p/ status
+    // @Query("SELECT p.statusRequest, COUNT(p) FROM Request p GROUP BY p.status")
+    // List<Object[]> countRequestsByStatusRequest();
 
-    // Pedidos pendentes (P/ dashboard)
-    @Query("SELECT p FROM Request p WHERE p.statusRequest IN ('PENDENTE', 'CONFIRMADO', 'PREPARANDO') "
-            + "ORDER BY p.dateRequest ASC")
-    List<Request> findOngoingRequests();
+    // // Pedidos pendentes (P/ dashboard)
+    // @Query("SELECT p FROM Request p WHERE p.statusRequest IN ('PENDENTE',
+    // 'CONFIRMADO', 'PREPARANDO') "
+    // + "ORDER BY p.dateRequest ASC")
+    // List<Request> findOngoingRequests();
 
-    // Valor total de vendas p/ período
-    @Query("SELECT SUM(p.totalValue) FROM Request p WHERE p.dateRequest BETWEEN :start AND :finish "
-            + "AND p.statusRequest NOT IN ('CANCELADO')")
-    BigDecimal calculateSellsPerTime(@Param("start") LocalDateTime start, @Param("finish") LocalDateTime finish);
+    // // Valor total de vendas p/ período
+    // @Query("SELECT SUM(p.totalValue) FROM Request p WHERE p.dateRequest BETWEEN
+    // :start AND :finish "
+    // + "AND p.statusRequest NOT IN ('CANCELADO')")
+    // BigDecimal calculateSellsPerTime(@Param("start") LocalDateTime start,
+    // @Param("finish") LocalDateTime finish);
 }

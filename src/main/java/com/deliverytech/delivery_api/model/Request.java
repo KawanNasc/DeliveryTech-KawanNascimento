@@ -36,18 +36,18 @@ public class Request {
     private List<ItemRequest> itemsRequest;
 
     public void addItem(ItemRequest item) {
-        throw new UnsupportedOperationException("Unimplemented method 'addItem'");
+        throw new UnsupportedOperationException("Erro ao adicionar item");
     }
 
     public void confirm() {
-        throw new UnsupportedOperationException("Unimplemented method 'confirm'");
-    }
-
-    public String getNote() {
-        throw new UnsupportedOperationException("Unimplemented method 'getNote'");
+        throw new UnsupportedOperationException("Erro ao confirmar pedido");
     }
 
     public void setNote(String string) {
-        throw new UnsupportedOperationException("Unimplemented method 'setNote'");
+        throw new UnsupportedOperationException("Erro ao dar observações");
+    }
+
+    public String getNote() {
+        throw new UnsupportedOperationException("Erro ao dar observações");
     }
 }

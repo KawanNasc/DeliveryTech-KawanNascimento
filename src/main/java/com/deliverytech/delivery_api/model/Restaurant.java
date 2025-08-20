@@ -16,6 +16,7 @@ public class Restaurant {
     private String address;
     private String phone;
     private BigDecimal deliveryFee;
+    private int evaluation;
     private boolean active;
 
     @OneToMany(mappedBy = "restaurant")

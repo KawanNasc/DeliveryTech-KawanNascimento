@@ -24,7 +24,7 @@ public class ItemRequest {
 
     @ManyToOne
     @JoinColumn(name = "request_id")
-    private Request requests;
+    private Request request;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

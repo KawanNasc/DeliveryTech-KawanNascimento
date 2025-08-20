@@ -55,7 +55,7 @@ public class RequestService {
         Request request = new Request();
         request.setClient(client);
         request.setRestaurant(restaurant);
-        request.setStatusRequest(StatusRequest.PENDENTE);
+        request.setStatusRequest(StatusRequest.OUTSTANDING);
 
         return requestRepository.save(request);
     }
@@ -81,7 +81,7 @@ public class RequestService {
         }
 
         ItemRequest item = new ItemRequest();
-        item.setRequests(request);
+        item.setRequest(request);
         item.setProducts(product);
         item.setQuantity(quantity);
         item.setUnitaryPrice(product.getPrice());
@@ -97,7 +97,7 @@ public class RequestService {
         Request request = findPerId(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
 
-        if (request.getStatusRequest() != StatusRequest.PENDENTE) {
+        if (request.getStatusRequest() != StatusRequest.OUTSTANDING) {
             throw new IllegalArgumentException("Apenas pedidos pendentes podem ser confirmados");
         }
 
@@ -107,7 +107,7 @@ public class RequestService {
 
         request.confirm();
 
-        request.setStatusRequest(StatusRequest.CONFIRMADO);
+        request.setStatusRequest(StatusRequest.CONFIRM);
         return requestRepository.save(request);
     }
 
@@ -122,26 +122,20 @@ public class RequestService {
         return requestRepository.findByClientIdOrderByDateRequestDesc(clientId);
     }
 
-    // Buscar p/ n° do pedido
-    @Transactional(readOnly = true)
-    public Optional<Request> findPerNumber(String numberRequest) {
-        return Optional.ofNullable(requestRepository.findByNumberRequest(numberRequest));
-    }
-
     // Cancelar pedido
     public Request cancelRequest(Long requestId, String reason) {
         Request request = findPerId(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
 
-        if (request.getStatusRequest() == StatusRequest.ENTREGUE) {
+        if (request.getStatusRequest() == StatusRequest.DELIVER) {
             throw new IllegalArgumentException("Pedido já entregue, não pode ser cancelado");
         }
 
-        if (request.getStatusRequest() == StatusRequest.CANCELADO) {
+        if (request.getStatusRequest() == StatusRequest.CANCELED) {
             throw new IllegalArgumentException("Pedido já está cancelado");
         }
 
-        request.setStatusRequest(StatusRequest.CANCELADO);
+        request.setStatusRequest(StatusRequest.CANCELED);
 
         if (reason != null && !reason.trim().isEmpty()) {
             request.setNote(request.getNote() + " | Cancelado: " + reason);
