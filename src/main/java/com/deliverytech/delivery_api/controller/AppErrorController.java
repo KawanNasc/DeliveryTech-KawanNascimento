@@ -26,7 +26,7 @@ public class AppErrorController implements ErrorController {
      */
     private ErrorAttributes errorAttributes;
 
-    private final static String ERROR_PATH = "/error";
+    private static final String ERROR_PATH = "/error";
 
     /**
      * Controller for the Error Controller
@@ -59,7 +59,7 @@ public class AppErrorController implements ErrorController {
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request, getTraceParameter(request));
         HttpStatus status = getStatus(request);
-        return new ResponseEntity<Map<String, Object>>(body, status);
+        return new ResponseEntity<>(body, status);
     }
 
     /**
@@ -76,7 +76,7 @@ public class AppErrorController implements ErrorController {
         if (parameter == null) {
             return false;
         }
-        return !"false".equals(parameter.toLowerCase());
+        return !"false".equalsIgnoreCase(parameter);
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request,
@@ -95,6 +95,7 @@ public class AppErrorController implements ErrorController {
             try {
                 return HttpStatus.valueOf(statusCode);
             } catch (Exception ex) {
+                // Exception ignored: fallback to INTERNAL_SERVER_ERROR
             }
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;

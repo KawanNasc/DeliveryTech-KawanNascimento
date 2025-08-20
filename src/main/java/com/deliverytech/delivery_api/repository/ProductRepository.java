@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByRestaurantAndAvailableTrue(Restaurant restaurant);
 
     // Buscar produtos p/ ID do restaurante
-    List<Product> findByRestaurantIdAndAvailableTrue(Long restaurantId);
+    List<Product> findByRestaurantIdAndAvailableTrue(Long restaurant_id);
 
     // Buscar p/ categoria
     List<Product> findByCategoryAndAvailableTrue(String category);
@@ -37,17 +37,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByAvailableTrueOrderByPriceDesc();
 
-//     // Query personalizada - Produtos mais vendidos
-//     @Query("SELECT p FROM Product")
-//     List<Product> findTopSellingProducts();
+    // Query personalizada - Produtos mais vendidos
+    @Query(value = "SELECT * FROM product p JOIN item_request i ON p.id = i.product_id GROUP BY p.name ORDER BY COUNT(i.product_id)", nativeQuery = true)
+    List<Product> findTopSellingProducts();
 
-//     // Buscar p/ restaurante e categoria
-//     @Query("SELECT * FROM Product WHERE restaurant.id = :restaurantId "
-//             + "AND category = :category AND available = true")
-//     List<Product> findByRestaurantAndCategory(@Param("restaurantId") Long restaurantId,
-//             @Param("category") String category);
+    // Buscar p/ restaurante e categoria
+    @Query(value = "SELECT * FROM product p JOIN restaurant r ON r.id = :restaurant_id WHERE p.category = :category AND p.available = true", nativeQuery = true)
+    List<Product> findByRestaurantAndCategory(@Param("restaurant_id") Long restaurant_id,
+            @Param("category") String category);
 
-//     // Contar produtos p/ restaurante
-//     @Query("SELECT COUNT (name) FROM Product WHERE restaurant.id = :restaurantId AND available = true")
-//     Long countByRestaurantId(@Param("restaurantId") Long restaurantId);
+    // Contar produtos p/ restaurante
+    @Query(value = "SELECT COUNT (name) FROM product p JOIN restaurant r ON r.id = p.restaurant_id WHERE r.id = :restaurant_id AND available = true", nativeQuery = true)
+    Long countByRestaurantId(@Param("restaurant_id") Long restaurant_id);
 }

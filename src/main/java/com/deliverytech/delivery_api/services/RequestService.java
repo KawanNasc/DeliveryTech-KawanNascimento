@@ -37,12 +37,12 @@ public class RequestService {
     private ProductRepository productRepository;
 
     // Criar novo pedido
-    public Request createRequest(Long clientId, Long restaurantId) {
+    public Request createRequest(Long clientId, Long restaurant_id) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + clientId));
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurant não encontrado: " + restaurantId));
+        Restaurant restaurant = restaurantRepository.findById(restaurant_id)
+                .orElseThrow(() -> new IllegalArgumentException("Restaurant não encontrado: " + restaurant_id));
 
         if (!client.isActive()) {
             throw new IllegalArgumentException("Cliente inativo, não pode fazer pedidos");

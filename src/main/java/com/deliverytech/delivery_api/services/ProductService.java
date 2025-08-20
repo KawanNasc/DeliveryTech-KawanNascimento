@@ -25,9 +25,9 @@ public class ProductService {
     private RestaurantRepository restaurantRepository;
 
     // Cadastrar novo produto
-    public Product register(Product product, Long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante não encontrado: " + restaurantId));
+    public Product register(Product product, Long restaurant_id) {
+        Restaurant restaurant = restaurantRepository.findById(restaurant_id)
+                .orElseThrow(() -> new IllegalArgumentException("Restaurante não encontrado: " + restaurant_id));
 
         validateDataProduct(product);
 
@@ -45,8 +45,8 @@ public class ProductService {
 
     // Listar produtos p/ restaurante
     @Transactional(readOnly = true)
-    public List<Product> listPerRestaurant(Long restaurantId) {
-        return productRepository.findByRestaurantIdAndAvailableTrue(restaurantId);
+    public List<Product> listPerRestaurant(Long restaurant_id) {
+        return productRepository.findByRestaurantIdAndAvailableTrue(restaurant_id);
     }
 
     // Buscar p/ categoria

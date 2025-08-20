@@ -29,30 +29,23 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     // Buscar p/ n° do pedido
     List<Request> findByDateRequestBetweenOrderByDateRequestDesc(LocalDateTime start, LocalDateTime finish);
 
-    // // Buscar pedidos do dia
-    // @Query("SELECT p FROM Request p WHERE DATE(p.dateRequest) = CURRENT_DATE
-    // ORDER BY p.dateRequest DESC")
-    // List<Request> findDailyRequests();
+    // Buscar pedidos do dia
+    @Query(value = "SELECT * FROM request WHERE DATE(dateRequest) = CURRENT_DATE ORDER BY dateRequest DESC", nativeQuery = true)
+    List<Request> findDailyRequests();
 
-    // // Buscar pedidos p/ restaurante
-    // @Query("SELECT p FROM Request p WHERE p.restaurant.id = :restaurantId ORDER
-    // BY p.dateRequest DESC")
-    // List<Request> findByRestaurantId(@Param("restaurantId") Long restaurantId);
+    // Buscar pedidos p/ restaurante
+    @Query(value = "SELECT * FROM request req JOIN restaurant res ON res.id = req.restaurant_id WHERE req.restaurant_id = :restaurant_id ORDER BY req.dateRequest DESC", nativeQuery = true)
+    List<Request> findByRestaurantId(@Param("restaurant_id") Long restaurant_id);
 
-    // // Relatório - Pedidos p/ status
-    // @Query("SELECT p.statusRequest, COUNT(p) FROM Request p GROUP BY p.status")
-    // List<Object[]> countRequestsByStatusRequest();
+    // Relatório - Pedidos p/ status
+    @Query(value = "SELECT statusRequest, COUNT(*) FROM request GROUP BY statusRequest", nativeQuery = true)
+    List<Object[]> countRequestsByStatusRequest();
 
-    // // Pedidos pendentes (P/ dashboard)
-    // @Query("SELECT p FROM Request p WHERE p.statusRequest IN ('PENDENTE',
-    // 'CONFIRMADO', 'PREPARANDO') "
-    // + "ORDER BY p.dateRequest ASC")
-    // List<Request> findOngoingRequests();
+    // Pedidos pendentes (P/ dashboard)
+    @Query(value = "SELECT * FROM request WHERE statusRequest IN ('PENDENTE', 'CONFIRMADO', 'PREPARANDO') ORDER BY dateRequest ASC", nativeQuery = true)
+    List<Request> findOngoingRequests();
 
-    // // Valor total de vendas p/ período
-    // @Query("SELECT SUM(p.totalValue) FROM Request p WHERE p.dateRequest BETWEEN
-    // :start AND :finish "
-    // + "AND p.statusRequest NOT IN ('CANCELADO')")
-    // BigDecimal calculateSellsPerTime(@Param("start") LocalDateTime start,
-    // @Param("finish") LocalDateTime finish);
+    // Valor total de vendas p/ período
+    @Query(value = "SELECT SUM(totalValue) FROM request WHERE dateRequest BETWEEN :start AND :finish AND statusRequest NOT IN ('CANCELADO')", nativeQuery = true)
+    BigDecimal calculateSellsPerTime(@Param("start") LocalDateTime start, @Param("finish") LocalDateTime finish);
 }
