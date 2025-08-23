@@ -55,7 +55,7 @@ public class RequestService {
         Request request = new Request();
         request.setClient(client);
         request.setRestaurant(restaurant);
-        request.setStatusRequest(StatusRequest.OUTSTANDING);
+        request.setStatusRequest(StatusRequest.PENDENTE);
 
         return requestRepository.save(request);
     }
@@ -97,7 +97,7 @@ public class RequestService {
         Request request = findPerId(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
 
-        if (request.getStatusRequest() != StatusRequest.OUTSTANDING) {
+        if (request.getStatusRequest() != StatusRequest.PENDENTE) {
             throw new IllegalArgumentException("Apenas pedidos pendentes podem ser confirmados");
         }
 
@@ -107,7 +107,7 @@ public class RequestService {
 
         request.confirm();
 
-        request.setStatusRequest(StatusRequest.CONFIRM);
+        request.setStatusRequest(StatusRequest.CONFIRMADO);
         return requestRepository.save(request);
     }
 
@@ -127,20 +127,24 @@ public class RequestService {
         Request request = findPerId(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
 
-        if (request.getStatusRequest() == StatusRequest.DELIVER) {
+        if (request.getStatusRequest() == StatusRequest.ENTREGUE) {
             throw new IllegalArgumentException("Pedido já entregue, não pode ser cancelado");
         }
 
-        if (request.getStatusRequest() == StatusRequest.CANCELED) {
+        if (request.getStatusRequest() == StatusRequest.CANCELADO) {
             throw new IllegalArgumentException("Pedido já está cancelado");
         }
 
-        request.setStatusRequest(StatusRequest.CANCELED);
+        request.setStatusRequest(StatusRequest.CANCELADO);
 
         if (reason != null && !reason.trim().isEmpty()) {
             request.setNote(request.getNote() + " | Cancelado: " + reason);
         }
 
         return requestRepository.save(request);
+    }
+
+    public Request updateStatusRequest(Long requestId, StatusRequest statusRequest) {
+        throw new UnsupportedOperationException("Unimplemented method 'updateStatusRequest'");
     }
 }

@@ -1,37 +1,109 @@
-# Delivery Tech API
+<h1>Delivery Tech API</h1>
+<p>Sistema de delivery desenvolvido c/ Spring Boot e Java 21.</p>
 
-Sistema de delivery desenvolvido com Spring Boot e Java 21.
+<h2> 👨‍💻 Desenvolvedor</h2>
+    <p>Kawan Nascimento da Silva -
+        TI56 02726 -
+        ARQUITETURA DE SISTEMAS
+    </p>
 
-## 🚀 Tecnologias
-- **Java 21 LTS** (versão mais recente)
-- Spring Boot 3.2.x
-- Spring Web
-- Spring Data JPA
-- H2 Database
-- Maven
+<h2>🚀 Tecnologias</h2>
+<ul>
+    <li><b>Java 21 LTS</b> (versão mais recente);</li>
+    <li>Spring Boot 3.2.x;</li>
+    <li>Spring Web;</li>
+    <li>Spring Data JPA;</li>
+    <li>H2 Database;</li>
+    <li>Maven.</li>
+</ul>
 
-## ⚡ Recursos Modernos Utilizados
-- Records (Java 14+)
-- Text Blocks (Java 15+)
-- Pattern Matching (Java 17+)
-- Virtual Threads (Java 21)
+<h2>⚡ Recursos modernos utilizados</h2>
+<ul>
+    <li>Records (Java 14+);</li>
+    <li>Text Blocks (Java 15+);</li>
+    <li>Pattern Matching (Java 17+);</li>
+    <li>Virtual Threads (Java 21)</li>
+</ul>
 
-## 🏃‍♂️ Como executar
-1. **Pré-requisitos:** JDK 21 instalado
-2. Clone o repositório
-3. Execute: `./mvnw spring-boot:run`
-4. Acesse: http://localhost:8080/health
+<h2>🔧 Configuração</h2>
+<ul>
+    <li>Porta: 8080</li>
+    <li>Banco: H2 em memória (Perfil: desenvolvimento)</li>
+</ul>
 
-## 📋 Endpoints
-- GET /health - Status da aplicação (inclui versão Java)
-- GET /info - Informações da aplicação
-- GET /h2-console - Console do banco H2
+<h2>🏃‍♂️ Como executar</h2>
+<ol>
+    <li><b>Pré-requisito:</b> JDK 21 instalado</li>
+    <li>Clone o repositório;</li>
+    <li>Execute: `./mvnw spring-boot:run`;</li>
+    <li>Acesse nossos endpoints pela web ou Postman. 
+        <br/>
+        (Em caso do Postman - Poderá a variável global 
+        <i>{{baseURL}}</i>
+        /<b>endpoint que deseja consultar.</b></li>
+</ol>
 
-## 🔧 Configuração
-- Porta: 8080
-- Banco: H2 em memória
-- Profile: development
+<h2>📋 Endpoints (Em desenvolvimento)</h2>
+<ul>
+<li><h3>Endpoints de verificação</h3></li>
+    <ul>
+        <li>GET</li>
+        <ul>
+            <li>/health: Status da aplicação (inclui versão Java);</li>
+            <li>/info: Informações da aplicação;</li>
+            <li>/h2-console: Console do banco H2 (Na web);</li>
+        </ul>
+    </ul>
 
-## 👨‍💻 Desenvolvedor
-Kawan Nascimento da Silva - TI56 02726 - ARQUITETURA DE SISTEMAS
-Desenvolvido com JDK 21 e Spring Boot 3.2.x
+<li><h3>Endpoints de /client/</h3></li>
+    <p>Parâmetros: <i>name, email, phone e address</i></p>
+    <ul>
+        <li>POST: 
+            Inserir valores dos parâmetros no <i>body.</i>
+        </li>
+        <li>GET</li>
+        <ul>
+            <li>/: Lista todos os clintes;</li>
+            <li>{id}: Procurar cliente/id;</li>
+            <li>{name}: Procurar cliente/nome;</li>
+            <li>{email}: Procurar cliente/e-mail;</li>
+        </ul>
+        <li>PUT</li>
+        <ul>
+            <li>{id}: Id do cliente a ser atualizado no <i>body</i>;</li>
+        </ul>
+        <li>DELETE</li>
+        <ul>
+            <li>{id}: Id do cliente a ser excluído.</li>
+        </ul>
+    </ul>
+
+<li><h3>Endpoints de /request/</h3></li>
+    <p>Parâmetros: <i>clientId e restaurantId</i> 
+    <br/>
+    (Esse último ainda não desenvolvido nos controllers).</p>
+    <ul>
+        <li>POST: 
+            Inserir valores dos parâmetros no <i>body.</i>
+        </li>
+        <ul>
+            <li>?clientId= &restaurantId= : 
+            <br/>
+            Criar pedido especificando cliente que pediu e restaurante atendente;</li>
+            <li>/1/itens?product_id= &quantity= : 
+            <br/>
+            Adicionar o id do item e quantia a ser selecionado;</li>
+        </ul>
+        <li>GET</li>
+        <ul>
+            <li>{id}: Id do pedido a ser pesquisado;</li>
+            <li>client/{id}: Listar pedidos/id do cliente;</li>
+        </ul>
+        <li>PUT</li>
+        <ul>
+            <li>{id}/confirm: Confirmar pedido/id</li>
+            <li>{id}/status: Atualizar status do pedido/id</li>
+            <li>{id}/cancel: Cancelar pedido/id</li>
+        </ul>
+    </ul>
+</ul>

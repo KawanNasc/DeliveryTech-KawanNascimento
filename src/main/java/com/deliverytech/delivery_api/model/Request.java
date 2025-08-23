@@ -16,9 +16,8 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime dateRequest;
-    private String addressDelivery;
+    private String note;
     private BigDecimal subtotal;
-    private BigDecimal deliveryfee;
     private BigDecimal totalValue;
 
     @Enumerated(EnumType.STRING)
@@ -41,13 +40,5 @@ public class Request {
 
     public void confirm() {
         throw new UnsupportedOperationException("Erro ao confirmar pedido");
-    }
-
-    public void setNote(String string) {
-        throw new UnsupportedOperationException("Erro ao dar observações");
-    }
-
-    public String getNote() {
-        throw new UnsupportedOperationException("Erro ao dar observações");
     }
 }

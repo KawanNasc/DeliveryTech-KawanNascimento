@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 @Entity
 @Data
 public class Product {
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
     private String name;
     private String description;
