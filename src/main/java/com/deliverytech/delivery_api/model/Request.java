@@ -2,6 +2,8 @@ package com.deliverytech.delivery_api.model;
 
 import com.deliverytech.delivery_api.enums.StatusRequest;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,6 +34,7 @@ public class Request {
     private Restaurant restaurant;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ItemRequest> itemsRequest;
 
     public void addItem(ItemRequest item) {

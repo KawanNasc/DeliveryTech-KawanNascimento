@@ -5,6 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 public class Restaurant {
@@ -20,8 +22,10 @@ public class Restaurant {
     private boolean active;
 
     @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
     private List<Product> products;
 
     @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
     private List<Request> requests;
 }

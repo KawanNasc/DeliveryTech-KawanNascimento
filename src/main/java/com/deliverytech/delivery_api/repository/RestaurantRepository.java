@@ -31,6 +31,12 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     // Ordernar p/ av. (Descendente)
     List<Restaurant> findByActiveTrueOrderByEvaluationDesc();
 
+    // Taxa de entrega - ou =
+    List<Restaurant> findByDeliveryFeeLessThanEqual(BigDecimal fee);
+
+    // Top 5 restaurantes p/ nome (Ordem alfabética)
+    List<Restaurant> findTop5ByOrderByNameAsc();
+
     // Query personalizada - restaurantes com produtos
     @Query(value = "SELECT DISTINCT * FROM restaurant r JOIN products p ON r.id = p.restaurant_id WHERE r.active = true", nativeQuery = true)
     List<Restaurant> findRestaurantsWithProducts();

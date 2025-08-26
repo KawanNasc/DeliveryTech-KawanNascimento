@@ -14,6 +14,9 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    // Apenas produtos disponíveis
+    List<Product> findByAvailableTrue();
+
     // Buscar produtos p/ restaurante
     List<Product> findByRestaurantAndAvailableTrue(Restaurant restaurant);
 
@@ -28,6 +31,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Buscar p/ faixa de preço
     List<Product> findByPriceBetweenAndAvailableTrue(BigDecimal priceMin, BigDecimal priceMax);
+
+    // Buscar p/ faixa de preço (- ou =)
+    List<Product> findByPriceLessThanEqual(BigDecimal price);
 
     // Buscar produtos mais baratos que um valor
     List<Product> findByPriceLessThanEqualAndAvailableTrue(BigDecimal price);

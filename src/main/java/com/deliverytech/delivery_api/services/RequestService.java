@@ -61,9 +61,9 @@ public class RequestService {
     }
 
     // Adicionar item ao pedido
-    public Request addItem(Long requestId, Long productId, Integer quantity) {
-        Request request = findPerId(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
+    public Request addItem(Long id, Long productId, Integer quantity) {
+        Request request = findPerId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: " + productId));
@@ -93,9 +93,9 @@ public class RequestService {
     }
 
     // Confirmar pedido
-    public Request confirmRequest(Long requestId) {
-        Request request = findPerId(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
+    public Request confirmRequest(Long id) {
+        Request request = findPerId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
         if (request.getStatusRequest() != StatusRequest.PENDENTE) {
             throw new IllegalArgumentException("Apenas pedidos pendentes podem ser confirmados");
@@ -123,9 +123,9 @@ public class RequestService {
     }
 
     // Cancelar pedido
-    public Request cancelRequest(Long requestId, String reason) {
-        Request request = findPerId(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + requestId));
+    public Request cancelRequest(Long id, String reason) {
+        Request request = findPerId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
         if (request.getStatusRequest() == StatusRequest.ENTREGUE) {
             throw new IllegalArgumentException("Pedido já entregue, não pode ser cancelado");
@@ -144,7 +144,7 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
-    public Request updateStatusRequest(Long requestId, StatusRequest statusRequest) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateStatusRequest'");
+    public Request updateStatusRequest(Long id, StatusRequest statusRequest) {
+        throw new UnsupportedOperationException("Método não implementado 'updateStatusRequest' (Atualizar status do pedido).");
     }
 }

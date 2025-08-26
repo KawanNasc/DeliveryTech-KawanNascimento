@@ -35,11 +35,11 @@ public class RequestController {
     }
 
     // Adicionar item ao pedido
-    @PostMapping("/{requestId}/itens")
-    public ResponseEntity<?> addItem(@PathVariable Long requestId, @RequestParam Long productId,
+    @PostMapping("/{id}/itens")
+    public ResponseEntity<?> addItem(@PathVariable Long id, @RequestParam Long productId,
             @RequestParam Integer quantity) {
         try {
-            Request request = requestService.addItem(requestId, productId, quantity);
+            Request request = requestService.addItem(id, productId, quantity);
             return ResponseEntity.ok(request);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
@@ -68,10 +68,10 @@ public class RequestController {
     }
 
     // Confirmar pedido
-    @PutMapping("/{requestId}/confirm")
-    public ResponseEntity<?> confirmRquest(@PathVariable Long requestId) {
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<?> confirmRquest(@PathVariable Long id) {
         try {
-            Request request = requestService.confirmRequest(requestId);
+            Request request = requestService.confirmRequest(id);
             return ResponseEntity.ok(request);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
@@ -81,11 +81,11 @@ public class RequestController {
     }
 
     // Atualizar status do pedido
-    @PutMapping("/{requestId}/status")
-    public ResponseEntity<?> updateStatusRequest(@PathVariable Long requestId, @RequestParam StatusRequest statusRequest) {
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatusRequest(@PathVariable Long id, @RequestParam StatusRequest statusRequest) {
         try {
             // Falta o updateStatusRequest
-            Request request = requestService.updateStatusRequest(requestId, statusRequest);
+            Request request = requestService.updateStatusRequest(id, statusRequest);
 
             return ResponseEntity.ok(request);
         }  catch (IllegalArgumentException e) {
