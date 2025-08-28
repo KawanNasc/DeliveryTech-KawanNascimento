@@ -29,14 +29,24 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByPhone(String phone);
 
     // Query personalizada - Clientes c/ pedidos
-    @Query(value = "SELECT DISTINCT * FROM client c JOIN requests WHERE c.active = true", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT * FROM client c " +
+            "JOIN requests " +
+            "WHERE c.active = true", nativeQuery = true)
     List<Client> findClientsWithRequests();
 
     // Query nativa - Clientes p/ cidade
-    @Query(value = "SELECT * FROM client WHERE address LIKE %:city% AND active = true", nativeQuery = true)
+    @Query(value = "SELECT * FROM client " +
+            "WHERE address LIKE %:city% AND active = true", nativeQuery = true)
     List<Client> findByCity(@Param("city") String city);
 
     // Contar clientes ativos
-    @Query(value = "SELECT COUNT(name) FROM client WHERE active = true", nativeQuery = true)
+    @Query(value = "SELECT COUNT(name) " +
+            "FROM client WHERE active = true", nativeQuery = true)
     Long countActiveClients();
+
+    @Query(value = "SELECT c.name, COUNT(p.id) AS totalRequests FROM client c " +
+            "LEFT JOIN request p ON c.id = p.client_id " +
+            "GROUP BY c.id, c.name " +
+            "ORDER BY totalRequests DESC LIMIT 10", nativeQuery = true)
+    List<Object[]> rankingClientsPerRequests();
 }

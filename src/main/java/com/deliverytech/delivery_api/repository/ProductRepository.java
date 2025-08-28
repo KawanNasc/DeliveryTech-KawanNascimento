@@ -44,15 +44,28 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByAvailableTrueOrderByPriceDesc();
 
     // Query personalizada - Produtos mais vendidos
-    @Query(value = "SELECT * FROM product p JOIN item_request i ON p.id = i.product_id GROUP BY p.name ORDER BY COUNT(i.product_id)", nativeQuery = true)
+    @Query(value = "SELECT * FROM product p " +
+            "JOIN item_request i ON p.id = i.product_id " +
+            "GROUP BY p.name " +
+            "ORDER BY COUNT(i.product_id)", nativeQuery = true)
     List<Product> findTopSellingProducts();
 
     // Buscar p/ restaurante e categoria
-    @Query(value = "SELECT * FROM product p JOIN restaurant r ON r.id = :restaurant_id WHERE p.category = :category AND p.available = true", nativeQuery = true)
+    @Query(value = "SELECT * FROM product p " +
+            "JOIN restaurant r ON r.id = :restaurant_id " +
+            "WHERE p.category = :category AND p.available = true", nativeQuery = true)
     List<Product> findByRestaurantAndCategory(@Param("restaurant_id") Long restaurant_id,
             @Param("category") String category);
 
     // Contar produtos p/ restaurante
-    @Query(value = "SELECT COUNT (name) FROM product p JOIN restaurant r ON r.id = p.restaurant_id WHERE r.id = :restaurant_id AND available = true", nativeQuery = true)
+    @Query(value = "SELECT COUNT (name) FROM product p " +
+            "JOIN restaurant r ON r.id = p.restaurant_id " +
+            "WHERE r.id = :restaurant_id AND available = true", nativeQuery = true)
     Long countByRestaurantId(@Param("restaurant_id") Long restaurant_id);
+
+    @Query(value = "SELECT p.name, COUNT(ir.product_id) AS numberSells FROM product p " + 
+            "LEFT JOIN item_request ir ON p.id = ir.product_id " + 
+            "GROUP BY p.id, p.name " +
+            "ORDER BY numberSells DESC LIMIT 5", nativeQuery = true)
+    List<Object[]> rankingMostSelledProducts();
 }
