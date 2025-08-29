@@ -23,5 +23,5 @@ public class Client {
     @OneToMany(mappedBy = "client")
     // Temporário - Enquanto s/ DTO'S
     @JsonIgnore
-    private List<Request> requests;
+    private List<Order> requests;
 }

@@ -19,7 +19,7 @@ public class DataLoader implements CommandLineRunner {
     private ProductRepository productRepository;
 
     @Autowired
-    private RequestRepository requestRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Iniciando carga de dados de teste");
 
-        requestRepository.deleteAll();
+        orderRepository.deleteAll();
         productRepository.deleteAll();
         restaurantRepository.deleteAll();
         clientRepository.deleteAll();

@@ -5,5 +5,5 @@ import java.math.BigDecimal;
 public interface SellsDTO {
     String getNameRestaurant();
     BigDecimal getTotalSells();
-    Long getQuantityRequests();
+    Long getQuantityOrders();
 }

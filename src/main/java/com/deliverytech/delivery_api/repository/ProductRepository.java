@@ -45,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Query personalizada - Produtos mais vendidos
     @Query(value = "SELECT * FROM product p " +
-            "JOIN item_request i ON p.id = i.product_id " +
+            "JOIN item_order i ON p.id = i.product_id " +
             "GROUP BY p.name " +
             "ORDER BY COUNT(i.product_id)", nativeQuery = true)
     List<Product> findTopSellingProducts();
@@ -63,8 +63,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE r.id = :restaurant_id AND available = true", nativeQuery = true)
     Long countByRestaurantId(@Param("restaurant_id") Long restaurant_id);
 
-    @Query(value = "SELECT p.name, COUNT(ir.product_id) AS numberSells FROM product p " + 
-            "LEFT JOIN item_request ir ON p.id = ir.product_id " + 
+    @Query(value = "SELECT p.name, COUNT(io.product_id) AS numberSells FROM product p " + 
+            "LEFT JOIN item_order io ON p.id = io.product_id " + 
             "GROUP BY p.id, p.name " +
             "ORDER BY numberSells DESC LIMIT 5", nativeQuery = true)
     List<Object[]> rankingMostSelledProducts();

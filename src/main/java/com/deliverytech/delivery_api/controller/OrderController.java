@@ -1,9 +1,9 @@
 package com.deliverytech.delivery_api.controller;
 
-import com.deliverytech.delivery_api.model.Request;
-import com.deliverytech.delivery_api.enums.StatusRequest;
+import com.deliverytech.delivery_api.model.Order;
+import com.deliverytech.delivery_api.enums.StatusOrder;
 
-import com.deliverytech.delivery_api.services.RequestService;
+import com.deliverytech.delivery_api.services.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +14,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/request")
+@RequestMapping("/order")
 @CrossOrigin(origins = "*")
-public class RequestController {
+public class OrderController {
 
     @Autowired
-    private RequestService requestService;
+    private OrderService orderService;
 
     // Criar novo pedido
     @PostMapping
-    public ResponseEntity<?> createRequest(@RequestParam Long clientId, @RequestParam Long restaurantId) {
+    public ResponseEntity<?> createOrder(@RequestParam Long clientId, @RequestParam Long restaurantId) {
         try {
-            Request request = requestService.createRequest(clientId, restaurantId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(request);
+            Order order = orderService.createOrder(clientId, restaurantId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(order);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
@@ -39,8 +39,8 @@ public class RequestController {
     public ResponseEntity<?> addItem(@PathVariable Long id, @RequestParam Long productId,
             @RequestParam Integer quantity) {
         try {
-            Request request = requestService.addItem(id, productId, quantity);
-            return ResponseEntity.ok(request);
+            Order order = orderService.addItem(id, productId, quantity);
+            return ResponseEntity.ok(order);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
@@ -51,10 +51,10 @@ public class RequestController {
      // Buscar pedido p/ ID
     @GetMapping("/{id}")
     public ResponseEntity<?> findPerId(@PathVariable Long id) {
-        Optional<Request> request = requestService.findPerId(id);
+        Optional<Order> order = orderService.findPerId(id);
 
-        if (request.isPresent()) {
-            return ResponseEntity.ok(request.get());
+        if (order.isPresent()) {
+            return ResponseEntity.ok(order.get());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -62,17 +62,17 @@ public class RequestController {
 
     // Listar pedidos p/ cliente
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<Request>> listPerClient(@PathVariable Long clientId) {
-        List<Request> requests = requestService.listPerClient(clientId);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<List<Order>> listPerClient(@PathVariable Long clientId) {
+        List<Order> order = orderService.listPerClient(clientId);
+        return ResponseEntity.ok(order);
     }
 
     // Confirmar pedido
     @PutMapping("/{id}/confirm")
     public ResponseEntity<?> confirmRquest(@PathVariable Long id) {
         try {
-            Request request = requestService.confirmRequest(id);
-            return ResponseEntity.ok(request);
+            Order order = orderService.confirmOrder(id);
+            return ResponseEntity.ok(order);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
@@ -82,12 +82,12 @@ public class RequestController {
 
     // Atualizar status do pedido
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateStatusRequest(@PathVariable Long id, @RequestParam StatusRequest statusRequest) {
+    public ResponseEntity<?> updateStatuOrder(@PathVariable Long id, @RequestParam StatusOrder statusOrder) {
         try {
-            // Falta o updateStatusRequest
-            Request request = requestService.updateStatusRequest(id, statusRequest);
+            // Falta o updateStatusOrder
+            Order order = orderService.updateStatusOrder(id, statusOrder);
 
-            return ResponseEntity.ok(request);
+            return ResponseEntity.ok(order);
         }  catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
@@ -96,12 +96,12 @@ public class RequestController {
     }
 
     // Cancelar pedido
-    @PutMapping("/{requestId}/cancel")
+    @PutMapping("/{id}/cancel")
     // Falta o atributo reason
-    public ResponseEntity<?> cancelRequest(@PathVariable Long requestId, @RequestParam(required = false) String reason) {
+    public ResponseEntity<?> cancelOrder(@PathVariable Long id, @RequestParam(required = false) String reason) {
         try {
-            Request request = requestService.cancelRequest(requestId, reason);
-            return ResponseEntity.ok(request);
+            Order order = orderService.cancelOrder(id, reason);
+            return ResponseEntity.ok(order);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {

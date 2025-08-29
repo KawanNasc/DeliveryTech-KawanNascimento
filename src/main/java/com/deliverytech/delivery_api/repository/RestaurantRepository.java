@@ -56,8 +56,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
         "ORDER BY category", nativeQuery = true)
     List<String> findAvailableCategories();
 
-    @Query("SELECT r.name as nameRestaurant, SUM(p.totalValue) as totalSells, COUNT(p.id) as quantityRequests FROM Restaurant r " +
-        "LEFT JOIN Request p ON r.id = p.restaurant.id " +
+    @Query("SELECT r.name as nameRestaurant, SUM(p.totalValue) as totalSells, COUNT(p.id) as quantityOrders FROM Restaurant r " +
+        "LEFT JOIN Order p ON r.id = p.restaurant.id " +
         "GROUP BY r.id, r.name")
     List<SellsDTO> calcuateSellsPerRestaurant();
 }

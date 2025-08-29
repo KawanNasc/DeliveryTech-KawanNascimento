@@ -1,14 +1,14 @@
 package com.deliverytech.delivery_api.services;
 
-import com.deliverytech.delivery_api.enums.StatusRequest;
+import com.deliverytech.delivery_api.enums.StatusOrder;
 
 import com.deliverytech.delivery_api.model.Client;
-import com.deliverytech.delivery_api.model.ItemRequest;
-import com.deliverytech.delivery_api.model.Request;
+import com.deliverytech.delivery_api.model.ItemOrder;
+import com.deliverytech.delivery_api.model.Order;
 import com.deliverytech.delivery_api.model.Restaurant;
 import com.deliverytech.delivery_api.model.Product;
 
-import com.deliverytech.delivery_api.repository.RequestRepository;
+import com.deliverytech.delivery_api.repository.OrderRepository;
 import com.deliverytech.delivery_api.repository.ClientRepository;
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
 import com.deliverytech.delivery_api.repository.ProductRepository;
@@ -22,10 +22,10 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class RequestService {
+public class OrderService {
 
     @Autowired
-    private RequestRepository requestRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -37,12 +37,12 @@ public class RequestService {
     private ProductRepository productRepository;
 
     // Criar novo pedido
-    public Request createRequest(Long clientId, Long restaurant_id) {
+    public Order createOrder(Long clientId, Long restaurant_id) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + clientId));
 
         Restaurant restaurant = restaurantRepository.findById(restaurant_id)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurant não encontrado: " + restaurant_id));
+                .orElseThrow(() -> new IllegalArgumentException("Restaurante não encontrado: " + restaurant_id));
 
         if (!client.isActive()) {
             throw new IllegalArgumentException("Cliente inativo, não pode fazer pedidos");
@@ -52,17 +52,17 @@ public class RequestService {
             throw new IllegalArgumentException("Restaurante inativo, não pode fazer pedidos");
         }
 
-        Request request = new Request();
-        request.setClient(client);
-        request.setRestaurant(restaurant);
-        request.setStatusRequest(StatusRequest.PENDENTE);
+        Order order = new Order();
+        order.setClient(client);
+        order.setRestaurant(restaurant);
+        order.setStatusOrder(StatusOrder.PENDENTE);
 
-        return requestRepository.save(request);
+        return orderRepository.save(order);
     }
 
     // Adicionar item ao pedido
-    public Request addItem(Long id, Long productId, Integer quantity) {
-        Request request = findPerId(id)
+    public Order addItem(Long id, Long productId, Integer quantity) {
+        Order order = findPerId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
         Product product = productRepository.findById(productId)
@@ -76,75 +76,75 @@ public class RequestService {
             throw new IllegalArgumentException("Quantidade deve ser maior que zero");
         }
 
-        if (!product.getRestaurant().getId().equals(request.getRestaurant().getId())) {
+        if (!product.getRestaurant().getId().equals(order.getRestaurant().getId())) {
             throw new IllegalArgumentException("Produto não pertence ao restaurante do pedido");
         }
 
-        ItemRequest item = new ItemRequest();
-        item.setRequest(request);
+        ItemOrder item = new ItemOrder();
+        item.setOrder(order);
         item.setProducts(product);
         item.setQuantity(quantity);
         item.setUnitaryPrice(product.getPrice());
         item.calculateSubtotal();
 
-        request.addItem(item);
+        order.addItem(item);
 
-        return requestRepository.save(request);
+        return orderRepository.save(order);
     }
 
     // Confirmar pedido
-    public Request confirmRequest(Long id) {
-        Request request = findPerId(id)
+    public Order confirmOrder(Long id) {
+        Order order = findPerId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
-        if (request.getStatusRequest() != StatusRequest.PENDENTE) {
+        if (order.getStatusOrder() != StatusOrder.PENDENTE) {
             throw new IllegalArgumentException("Apenas pedidos pendentes podem ser confirmados");
         }
 
-        if (request.getItemsRequest().isEmpty()) {
+        if (order.getItemsOrder().isEmpty()) {
             throw new IllegalArgumentException("Pedido deve ter pelo menos 1 item");
         }
 
-        request.confirm();
+        order.confirm();
 
-        request.setStatusRequest(StatusRequest.CONFIRMADO);
-        return requestRepository.save(request);
+        order.setStatusOrder(StatusOrder.CONFIRMADO);
+        return orderRepository.save(order);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Request> findPerId(Long id) {
-        return requestRepository.findById(id);
+    public Optional<Order> findPerId(Long id) {
+        return orderRepository.findById(id);
     }
 
     // Listar pedidos p/ cliente
     @Transactional(readOnly = true)
-    public List<Request> listPerClient(Long clientId) {
-        return requestRepository.findByClientIdOrderByDateRequestDesc(clientId);
+    public List<Order> listPerClient(Long clientId) {
+        return orderRepository.findByClientIdOrderByDateOrderDesc(clientId);
     }
 
     // Cancelar pedido
-    public Request cancelRequest(Long id, String reason) {
-        Request request = findPerId(id)
+    public Order cancelOrder(Long id, String reason) {
+        Order order = findPerId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
 
-        if (request.getStatusRequest() == StatusRequest.ENTREGUE) {
+        if (order.getStatusOrder() == StatusOrder.ENTREGUE) {
             throw new IllegalArgumentException("Pedido já entregue, não pode ser cancelado");
         }
 
-        if (request.getStatusRequest() == StatusRequest.CANCELADO) {
+        if (order.getStatusOrder() == StatusOrder.CANCELADO) {
             throw new IllegalArgumentException("Pedido já está cancelado");
         }
 
-        request.setStatusRequest(StatusRequest.CANCELADO);
+        order.setStatusOrder(StatusOrder.CANCELADO);
 
         if (reason != null && !reason.trim().isEmpty()) {
-            request.setNote(request.getNote() + " | Cancelado: " + reason);
+            order.setNote(order.getNote() + " | Cancelado: " + reason);
         }
 
-        return requestRepository.save(request);
+        return orderRepository.save(order);
     }
 
-    public Request updateStatusRequest(Long id, StatusRequest statusRequest) {
-        throw new UnsupportedOperationException("Método não implementado 'updateStatusRequest' (Atualizar status do pedido).");
+    public Order updateStatusOrder(Long id, StatusOrder statusOrder) {
+        throw new UnsupportedOperationException("Método não implementado 'updateStatusOrder' (Atualizar status do pedido).");
     }
 }

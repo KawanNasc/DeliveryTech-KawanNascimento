@@ -1,6 +1,6 @@
 package com.deliverytech.delivery_api.enums;
 
-public enum StatusRequest {
+public enum StatusOrder {
     PENDENTE("Pendente"),
     CONFIRMADO("Confirmado"),
     PREPARANDO("Preparando"),
@@ -10,7 +10,7 @@ public enum StatusRequest {
 
     private final String description;
 
-    StatusRequest(String description) {
+    StatusOrder(String description) {
         this.description = description;
     }
 

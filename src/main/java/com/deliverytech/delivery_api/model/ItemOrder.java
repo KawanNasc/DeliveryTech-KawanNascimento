@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
-public class ItemRequest {
+public class ItemOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,7 @@ public class ItemRequest {
 
     @ManyToOne
     @JoinColumn(name = "request_id")
-    private Request request;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
