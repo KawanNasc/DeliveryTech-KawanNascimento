@@ -19,7 +19,9 @@ public class Request {
     private Long id;
     private LocalDateTime dateRequest;
     private String note;
+    private String deliveryAddress;
     private BigDecimal subtotal;
+    private BigDecimal deliveryFee;
     private BigDecimal totalValue;
 
     @Enumerated(EnumType.STRING)

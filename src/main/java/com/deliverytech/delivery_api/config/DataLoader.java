@@ -28,6 +28,8 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Iniciando carga de dados de teste");
 
+        // Utilizando apenas inserção de dados no data.sql = Descomente
+        // Código comentado para não executar conflito de relacionamento em métodos insert não existentes
         requestRepository.deleteAll();
         productRepository.deleteAll();
         restaurantRepository.deleteAll();

@@ -1,25 +1,19 @@
-package com.deliverytech.delivery_api.data.request;
+package com.deliverytech.delivery_api.data.response;
 
 import com.deliverytech.delivery_api.data.ItemRequestDTO;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 import java.util.List;
 
-public class RequestDTORequest {
-    @NotNull(message = "Cliente é obrigatório")
+public class RequestDTOResponse {
+    private Long id;
     private Long clientId;
-
-    @NotNull(message = "Restaurante é obrigatório")
     private Long restaurantId;
-
-    @NotBlank(message = "Endereço de entrega é obrigatório")
-    @Size(max = 200, message = "Endereço deve ter no máx. 200 caracteres")
     private String deliveryAddress;
-
-    @NotEmpty(message = "Pedido deve ter pelo menos 1 item")
-    @Valid
+    private String note;
     private List<ItemRequestDTO> items;
+
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public Long getClientId() { return clientId; }
     public void setClientId(Long clientId) { this.clientId = clientId; }
@@ -29,6 +23,9 @@ public class RequestDTORequest {
 
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
 
     public List<ItemRequestDTO> getItems() { return items; }
     public void setItems(List<ItemRequestDTO> items) { this.items = items; }

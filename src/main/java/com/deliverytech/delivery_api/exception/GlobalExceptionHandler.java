@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -15,11 +14,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<CustomErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
         CustomErrorResponse error = new CustomErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
-            "Entidade não encontrada",
-            ex.getMessage(),
-            LocalDateTime.now()
-        );
+                HttpStatus.NOT_FOUND.value(),
+                "Entidade não encontrada",
+                ex.getMessage(),
+                LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
@@ -27,11 +25,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CustomErrorResponse> handleBusinessException(BusinessException ex) {
         CustomErrorResponse error = new CustomErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Error de regra de negócio",
-            ex.getMessage(),
-            LocalDateTime.now()
-        );
+                HttpStatus.BAD_REQUEST.value(),
+                "Error de regra de negócio",
+                ex.getMessage(),
+                LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -46,11 +43,10 @@ public class GlobalExceptionHandler {
         });
 
         ValidationErrorResponse errorResponse = new ValidationErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Dados inválidos",
-            errors,
-            LocalDateTime.now()
-        );
+                HttpStatus.BAD_REQUEST.value(),
+                "Dados inválidos",
+                errors,
+                LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -58,11 +54,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex) {
         CustomErrorResponse error = new CustomErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Erro interno do servidor",
-            "Ocorreu um error inesperado",
-            LocalDateTime.now()
-        );
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Erro interno do servidor",
+                "Ocorreu um error inesperado",
+                LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }

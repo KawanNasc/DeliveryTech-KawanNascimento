@@ -1,7 +1,5 @@
 package com.deliverytech.delivery_api.data.response;
 
-import jakarta.validation.constraints.*;
-
 public class ClientDTOResponse {
     private Long id;
     private String name;
@@ -10,10 +8,10 @@ public class ClientDTOResponse {
     private String address;
     private boolean active;
 
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id;}
-
-    // Getters e Setters
+    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

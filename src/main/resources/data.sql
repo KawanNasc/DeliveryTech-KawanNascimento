@@ -1,16 +1,16 @@
 -- Inserir clientes
 INSERT INTO client (name, email, phone, address, date_register, active) 
 VALUES 
-('João Silva', 'joao@email.com', '(11) 99999-1111', 'Rua A, 123 - São Paulo/SP', NOW(), true),
-('Maria Santos', 'maria@email.com', '(11) 99999-2222', 'Rua B, 456 - São Paulo/SP', NOW(), true),
-('Pedro Oliveira', 'pedro@email.com', '(11) 99999-3333', 'Rua C, 789 - São Paulo/SP', NOW(), true);
+('João Silva', 'joao@email.com', '999991111', 'Rua A, 123 - São Paulo/SP', NOW(), true),
+('Maria Santos', 'maria@email.com', '999992222', 'Rua B, 456 - São Paulo/SP', NOW(), true),
+('Pedro Oliveira', 'pedro@email.com', '999993333', 'Rua C, 789 - São Paulo/SP', NOW(), true);
 
 -- Inserir restaurantes
 INSERT INTO restaurant (name, category, address, phone, delivery_fee, evaluation, active) 
 VALUES
-('Pizzaria Bella', 'Italiana', 'Av. Paulista, 1000 - São Paulo/SP', '(11) 3333-1111', 5, 4.5, true),
-('Burguer House', 'Hamburgueria', 'R. Augusta, 500 - São Paulo/SP', '(11) 3333-2222', 3.5, 4.2, true),
-('Sushi Master', 'Japonesa', 'R. Liberdade, 200 - São Paulo/SP', '(11) 3333-3333', 8, 4.8, true);
+('Pizzaria Bella', 'Italiana', 'Av. Paulista, 1000 - São Paulo/SP', '1133331111', 5, 4.5, true),
+('Burguer House', 'Hamburgueria', 'R. Augusta, 500 - São Paulo/SP', '1133332222', 3.5, 4.2, true),
+('Sushi Master', 'Japonesa', 'R. Liberdade, 200 - São Paulo/SP', '1133333333', 8, 4.8, true);
 
 --  Inserir produtos
 INSERT INTO product (name, description, price, category, available, restaurant_id)
@@ -30,11 +30,11 @@ VALUES
 ('Hot Roll Salmão', '8 peças de salmão', 32.9, 'Hot Roll', true, 3),
 ('Temaki Atum', 'Temaki de atum c/ cream cheese', 15.9, 'Temaki', true, 3);
 
-INSERT INTO request (date_request, note, subtotal, total_value, status_request, client_id, restaurant_id)
+INSERT INTO request (date_request, note, delivery_address, subtotal, delivery_fee, total_value, status_request, client_id, restaurant_id)
 VALUES
-(NOW(), 'Sem cebola na pizza', 54.8, 54.8, 'PENDENTE',  1, 1),
-(NOW(), '', 41.8, 41.8, 'CONFIRMADO', 2, 2),
-(NOW(), 'Sem cebola na pizza', 54.8, 54.8, 'PENDENTE', 3, 3);
+(NOW(), 'Sem cebola na pizza', 'Rua A, 123 - São Paulo/SP', 54.8, 0, 54.8, 'PENDENTE',  1, 1),
+(NOW(), '', 'Rua B, 456 - São Paulo/SP', 41.8, 0, 41.8, 'CONFIRMADO', 2, 2),
+(NOW(), 'Sem cebola na pizza', 'Rua C, 789 - São Paulo/SP', 54.8, 0, 54.8, 'PENDENTE', 3, 3);
 
 -- Inserir pedidos
 INSERT INTO item_request (quantity, unitary_price, subtotal, request_id, product_id)

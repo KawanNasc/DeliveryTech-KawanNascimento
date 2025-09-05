@@ -12,7 +12,7 @@ public class ClientDTORequest {
     private String email;
 
     @NotBlank(message = "Telefone é obrigatório")
-    @Pattern(regexp = "\b{10,11}", message = "Telefone deve ter 10-11 dígitos")
+    @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter 10-11 dígitos")
     private String phone;
 
     @NotBlank(message = "Endereço é obrigatório")

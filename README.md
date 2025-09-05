@@ -65,23 +65,21 @@
         <ul>
             <li>/: Lista todos os clintes;</li>
             <li>{id}: Procurar cliente/id;</li>
-            <li>{name}: Procurar cliente/nome;</li>
             <li>{email}: Procurar cliente/e-mail;</li>
         </ul>
         <li>PUT</li>
         <ul>
             <li>{id}: Id do cliente a ser atualizado no <i>body</i>;</li>
         </ul>
-        <li>DELETE</li>
-        <ul>
-            <li>{id}: Id do cliente a ser excluído.</li>
-        </ul>
+    </ul>
+    <h4>Apenas funcionando com implementação de models</h4>
+    <ul>
+        <li>GET -  {name}: Procurar cliente/nome;</li>
+        <li>DELETE - {id}: Id do cliente a ser excluído.</li>
     </ul>
 
 <li><h3>Endpoints de /request/</h3></li>
-    <p>Parâmetros: <i>clientId e restaurantId</i> 
-    <br/>
-    (Esse último ainda não desenvolvido nos controllers).</p>
+    <p>Parâmetros: <i>clientId e restaurantId</i>.</p>
     <ul>
         <li>POST: 
             Inserir valores dos parâmetros no <i>body.</i>
@@ -90,9 +88,6 @@
             <li>?clientId= &restaurantId= : 
             <br/>
             Criar pedido especificando cliente que pediu e restaurante atendente;</li>
-            <li>/1/itens?product_id= &quantity= : 
-            <br/>
-            Adicionar o id do item e quantia a ser selecionado;</li>
         </ul>
         <li>GET</li>
         <ul>
@@ -101,9 +96,15 @@
         </ul>
         <li>PUT</li>
         <ul>
-            <li>{id}/confirm: Confirmar pedido/id</li>
             <li>{id}/status: Atualizar status do pedido/id</li>
-            <li>{id}/cancel: Cancelar pedido/id</li>
         </ul>
+    </ul>
+    <h4>Apenas funcionando com implementação de models</h4>
+    <ul>
+        <li>/1/itens?product_id= &quantity= :
+        <br/>
+        Adicionar o id do item e quantia a ser selecionado;</li>
+        <li>PUT - {id}/confirm: Confirmar pedido/id</li>
+        <li>PUT - {id}/cancel: Cancelar pedido/id</li>
     </ul>
 </ul>
