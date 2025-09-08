@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,14 +43,14 @@ public class RestaurantService {
 
     // Listar restaurantes ativos
     @Transactional(readOnly = true)
-    public List<Restaurant> listActive() {
-        return restaurantRepository.findByActiveTrue();
+    public Page<Restaurant> listActive(boolean active, Pageable pageable) {
+        return restaurantRepository.findByActiveTrue(active, pageable);
     }
 
     // Buscar p/ categoria
     @Transactional(readOnly = true)
-    public List<Restaurant> findPerCategory(String category) {
-        return restaurantRepository.findByCategoryAndActiveTrue(category);
+    public Page<Restaurant> findPerCategory(String category, boolean active, Pageable pageable) {
+        return restaurantRepository.findByCategoryAndActiveTrue(category, active, pageable);
     }
 
     // Atualizar restaurante

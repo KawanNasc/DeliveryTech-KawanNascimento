@@ -5,10 +5,14 @@ import com.deliverytech.delivery_api.model.Client;
 
 import com.deliverytech.delivery_api.enums.StatusRequest;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,7 +31,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByStatusRequestOrderByDateRequestDesc(StatusRequest statusRequest);
 
     // Buscar p/ n° do pedido
-    List<Request> findByDateRequestBetweenOrderByDateRequestDesc(LocalDateTime start, LocalDateTime end);
+    Page<Request> findByDateRequestBetweenOrderByDateRequestDesc(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
     // 10 pedidos mais recentes
     List<Request> findTop10ByOrderByDateRequestDesc();

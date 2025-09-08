@@ -22,6 +22,8 @@ public class Request {
     private String deliveryAddress;
     private BigDecimal subtotal;
     private BigDecimal deliveryFee;
+    private Integer deliveryTime;
+    private String workHours;
     private BigDecimal totalValue;
 
     @Enumerated(EnumType.STRING)

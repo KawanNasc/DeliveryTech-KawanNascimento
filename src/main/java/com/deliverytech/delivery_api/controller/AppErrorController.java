@@ -81,7 +81,7 @@ public class AppErrorController implements ErrorController {
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request,
             boolean includeStackTrace) {
-        WebRequest webRequest = new ServletWebRequest((jakarta.servlet.http.HttpServletRequest) request);
+        WebRequest webRequest = new ServletWebRequest(request);
         ErrorAttributeOptions options = includeStackTrace
                 ? ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE)
                 : ErrorAttributeOptions.defaults();

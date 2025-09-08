@@ -20,11 +20,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // Buscar produtos p/ restaurante
     List<Product> findByRestaurantAndAvailableTrue(Restaurant restaurant);
 
-    // Buscar produtos p/ ID do restaurante
-    List<Product> findByRestaurantIdAndAvailableTrue(Long restaurant_id);
+    // Use this method for dynamic availability filtering
+    List<Product> findByRestaurantIdAndAvailable(Long restaurantId, Boolean available);
+
+    // Keep these for specific cases (no boolean parameter needed)
+    List<Product> findByRestaurantIdAndAvailableTrue(Long restaurantId);
+    List<Product> findByRestaurantIdAndAvailableFalse(Long restaurantId);
+    List<Product> findByRestaurantId(Long restaurantId);
 
     // Buscar p/ categoria
     List<Product> findByCategoryAndAvailableTrue(String category);
+
+    // Buscar p/ categoria
+    List<Product> findByCategoryIgnoreCase(String category);
 
     // Buscar p/ nome contendo
     List<Product> findByNameContainingIgnoreCaseAndAvailableTrue(String name);
@@ -42,6 +50,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByAvailableTrueOrderByPriceAsc();
 
     List<Product> findByAvailableTrueOrderByPriceDesc();
+
+    boolean existsByNameAndRestaurantId(String name, Long restaurant_id);
+
+    boolean existsByNameAndRestaurantIdAndIdNot(String name, Long restaurant_id, Long id);
+
+    // Or using EXISTS (more efficient for large datasets)
+        @Query("SELECT CASE WHEN EXISTS(" +
+        "SELECT 1 FROM ItemRequest ir WHERE ir.products.id = :productId" +
+        ") THEN true ELSE false END")
+        boolean hasAssociatedRequests(@Param("productId") Long productId);
 
     // Query personalizada - Produtos mais vendidos
     @Query(value = "SELECT * FROM product p " +

@@ -65,7 +65,7 @@ public class DataLoader implements CommandLineRunner {
         client3.setEmail("pedro@email.com");
         client3.setPhone("11777777777");
         client3.setAddress("Rua C, 789");
-        client3.setActive(false);
+        client3.setActive(true);
 
         clientRepository.saveAll(Arrays.asList(client1, client2, client3));
         System.out.println("3 clientes inseridos");

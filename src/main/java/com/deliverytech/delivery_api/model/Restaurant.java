@@ -18,6 +18,8 @@ public class Restaurant {
     private String address;
     private String phone;
     private BigDecimal deliveryFee;
+    private Integer deliveryTime;
+    private String workHours;
     private int evaluation;
     private boolean active;
 

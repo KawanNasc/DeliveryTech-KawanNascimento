@@ -1,6 +1,10 @@
 package com.deliverytech.delivery_api.services.impl;
 
+import com.deliverytech.delivery_api.data.request.CalculateRequestDTORequest;
 import com.deliverytech.delivery_api.data.request.RequestDTORequest;
+import com.deliverytech.delivery_api.data.request.StatusRequestDTORequest;
+
+import com.deliverytech.delivery_api.data.response.CalculateRequestDTOResponse;
 import com.deliverytech.delivery_api.data.response.RequestDTOResponse;
 import com.deliverytech.delivery_api.data.ItemRequestDTO;
 
@@ -15,9 +19,13 @@ import com.deliverytech.delivery_api.exception.EntityNotFoundException;
 import com.deliverytech.delivery_api.repository.*;
 
 import org.modelmapper.ModelMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -140,6 +148,20 @@ public class RequestServiceImpl implements RequestServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<RequestDTOResponse> listRequest(LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        Page<Request> requests;
+        
+        if (start != null && end != null) {
+            requests = requestRepository.findByDateRequestBetweenOrderByDateRequestDesc(start, end, pageable);
+        } else {
+            requests = requestRepository.findAll(pageable);
+        }
+        
+        return requests.map(request -> modelMapper.map(request, RequestDTOResponse.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public RequestDTOResponse findRequestPerId(Long id) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado com ID: " + id));
@@ -157,39 +179,60 @@ public class RequestServiceImpl implements RequestServiceInterface {
     }
 
     @Override
-    public RequestDTOResponse updateStatusRequesT(Long id, StatusRequest newStatus) {
-         Request request = requestRepository.findById(id)
+    public RequestDTOResponse updateStatusRequesT(Long id, StatusRequestDTORequest statusRequest) {
+        Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
-    
+
+        // Extrair o novo status do DTO
+        StatusRequest newStatus = statusRequest.getStatusRequest(); // Assumindo que StatusRequestDTORequest tem um método getStatus()
+
         // Validar transições de status permitidas
         if (!isValidTransiction(request.getStatusRequest(), newStatus)) {
             throw new BusinessException("Transição de status inválida: " + request.getStatusRequest() + " -> " + newStatus);
         }
-    
+
         request.setStatusRequest(newStatus);
         Request updatedRequest = requestRepository.save(request);
-    
+
         return modelMapper.map(updatedRequest, RequestDTOResponse.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateTotalRequest(List<ItemRequestDTO> items) {
-        BigDecimal total = BigDecimal.ZERO;
+    public CalculateRequestDTOResponse calculateTotalRequest(CalculateRequestDTORequest request) {
+        BigDecimal subtotal = BigDecimal.ZERO;
 
-        for (ItemRequestDTO item : items) {
-            Product product = productRepository.findById(item.getProductId()).orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+        for (ItemRequestDTO item : request.getItems()) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
             BigDecimal subtotalItem = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-            total = total.add(subtotalItem);
+            subtotal = subtotal.add(subtotalItem);
         }
 
-        return total;
+        // Buscar taxa de entrega do restaurante se fornecido
+        BigDecimal deliveryFee = BigDecimal.ZERO;
+        if (request.getRestaurantId() != null) {
+            Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+                    .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
+            deliveryFee = restaurant.getDeliveryFee();
+        }
+
+        BigDecimal total = subtotal.add(deliveryFee);
+
+        // Criar e retornar o DTO de resposta
+        CalculateRequestDTOResponse response = new CalculateRequestDTOResponse();
+        response.setSubtotal(subtotal);
+        response.setDeliveryFee(deliveryFee);
+        response.setTotal(total);
+
+        return response;
     }
 
     @Override
     public void cancelRequest(Long id) {
-        Request request = requestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
+        Request request = requestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
 
         if (!canBeCanceled(request.getStatusRequest())) {
             throw new BusinessException("Pedido não pode ser cancelado no status: " + request.getStatusRequest());

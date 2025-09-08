@@ -17,9 +17,7 @@ public class ApiResponseWrapper<T> {
     @Schema(description = "Response timestamp", example = "2025-09-06T20:55:40")
     private LocalDateTime timestamp;
 
-    public ApiResponseWrapper() {
-        this.timestamp = LocalDateTime.now();
-    }
+    public ApiResponseWrapper() { this.timestamp = LocalDateTime.now(); }
 
     public ApiResponseWrapper(boolean success, T data, String message) {
         this.success = success;
@@ -28,13 +26,9 @@ public class ApiResponseWrapper<T> {
         this.timestamp = LocalDateTime.now();
     }
 
-    public static <T> ApiResponseWrapper<T> success(T data, String message) {
-        return new ApiResponseWrapper<>(true, data, message);
-    }
+    public static <T> ApiResponseWrapper<T> success(T data, String message) { return new ApiResponseWrapper<>(true, data, message); }
 
-    public static <T> ApiResponseWrapper<T> error(String message) {
-        return new ApiResponseWrapper<>(false, null, message);
-    }
+    public static <T> ApiResponseWrapper<T> error(String message) { return new ApiResponseWrapper<>(false, null, message); }
 
     // Getters e Setters
     public boolean isSuccess() { return success; }

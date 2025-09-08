@@ -45,7 +45,7 @@ public class ProductService {
 
     // Listar produtos p/ restaurante
     @Transactional(readOnly = true)
-    public List<Product> listPerRestaurant(Long restaurant_id) {
+    public List<Product> listPerRestaurant(Long restaurant_id, boolean available) {
         return productRepository.findByRestaurantIdAndAvailableTrue(restaurant_id);
     }
 

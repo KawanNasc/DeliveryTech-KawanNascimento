@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +21,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     // Buscar p/ nome
     Optional<Restaurant> findByName(String name);
 
+    List<Restaurant> findByCategory(String category);
+
     // Buscar restaurantes ativos
-    List<Restaurant> findByActiveTrue();
+    Page<Restaurant> findByActiveTrue(boolean active, Pageable pageable);
 
     // Buscar p/ categoria
-    List<Restaurant> findByCategoryAndActiveTrue(String category);
+    Page<Restaurant> findByCategoryAndActiveTrue(String category, boolean active, Pageable pageable);
 
     // Buscar p/ nome contendo (Case insensitive)
     List<Restaurant> findByNameContainingIgnoreCaseAndActiveTrue(String name);
@@ -38,6 +43,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     // Top 5 restaurantes p/ nome (Ordem alfabética)
     List<Restaurant> findTop5ByOrderByNameAsc();
+
+    boolean existsByNameAndAddress(String name, String address);
+
+    boolean existsByNameAndAddressAndIdNot(String name, String address, Long id);
 
     // Query personalizada - restaurantes com produtos
     @Query(value = "SELECT DISTINCT * FROM restaurant r " +
