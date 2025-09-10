@@ -66,6 +66,26 @@ public class ProductServiceImpl implements ProductServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ProductDTOResponse> findProductsByCategory(String category) {
+        List<Product> products = productRepository.findByCategoryIgnoreCase(category);
+
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTOResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDTOResponse> searchProductsByName(String name) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndAvailableTrue(name);
+
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTOResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public ProductDTOResponse updateProduct(Long id, ProductDTORequest dto) {
         Product product = productRepository.findById(id)
@@ -100,20 +120,6 @@ public class ProductServiceImpl implements ProductServiceInterface {
 
     @Override
     @Transactional
-    public void removeProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
-
-        // Check if product has associated requests (business rule)
-        if (productRepository.hasAssociatedRequests(id)) {
-            throw new BusinessException("Não é possível remover produto que possui pedidos associados");
-        }
-
-        productRepository.delete(product);
-    }
-
-    @Override
-    @Transactional
     public ProductDTOResponse changeAvailability(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
@@ -127,23 +133,17 @@ public class ProductServiceImpl implements ProductServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ProductDTOResponse> findProductsByCategory(String category) {
-        List<Product> products = productRepository.findByCategoryIgnoreCase(category);
+    @Transactional
+    public void removeProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTOResponse.class))
-                .collect(Collectors.toList());
-    }
+        // Check if product has associated requests (business rule)
+        if (productRepository.hasAssociatedRequests(id)) {
+            throw new BusinessException("Não é possível remover produto que possui pedidos associados");
+        }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProductDTOResponse> searchProductsByName(String name) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndAvailableTrue(name);
-
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTOResponse.class))
-                .collect(Collectors.toList());
+        productRepository.delete(product);
     }
 
     @Override

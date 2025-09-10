@@ -49,6 +49,16 @@ public class ClientServiceImpl implements ClientServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ClientDTOResponse> listActiveClients() {
+        List<Client> activeClients =  clientRepository.findByActiveTrue();
+
+        return activeClients.stream()
+                .map(client -> modelMapper.map(client, ClientDTOResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ClientDTOResponse findClientPerId(Long id) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado c/ id: " + id));
 
@@ -90,15 +100,5 @@ public class ClientServiceImpl implements ClientServiceInterface {
         Client updatedClient = clientRepository.save(client);
 
         return modelMapper.map(updatedClient, ClientDTOResponse.class);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ClientDTOResponse> listActiveClients() {
-        List<Client> activeClients =  clientRepository.findByActiveTrue();
-
-        return activeClients.stream()
-                .map(client -> modelMapper.map(client, ClientDTOResponse.class))
-                .collect(Collectors.toList());
     }
 }

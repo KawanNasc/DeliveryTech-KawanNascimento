@@ -24,10 +24,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByCategory(String category);
 
     // Buscar restaurantes ativos
-    Page<Restaurant> findByActiveTrue(boolean active, Pageable pageable);
+    Page<Restaurant> findByActiveTrue(Pageable pageable);
 
     // Buscar p/ categoria
-    Page<Restaurant> findByCategoryAndActiveTrue(String category, boolean active, Pageable pageable);
+    Page<Restaurant> findByCategoryAndActiveTrue(String category, Pageable pageable);
 
     // Buscar p/ nome contendo (Case insensitive)
     List<Restaurant> findByNameContainingIgnoreCaseAndActiveTrue(String name);

@@ -148,6 +148,38 @@ public class RequestServiceImpl implements RequestServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
+    public CalculateRequestDTOResponse calculateTotalRequest(CalculateRequestDTORequest request) {
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        for (ItemRequestDTO item : request.getItems()) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+
+            BigDecimal subtotalItem = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            subtotal = subtotal.add(subtotalItem);
+        }
+
+        // Buscar taxa de entrega do restaurante se fornecido
+        BigDecimal deliveryFee = BigDecimal.ZERO;
+        if (request.getRestaurantId() != null) {
+            Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+                    .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
+            deliveryFee = restaurant.getDeliveryFee();
+        }
+
+        BigDecimal total = subtotal.add(deliveryFee);
+
+        // Criar e retornar o DTO de resposta
+        CalculateRequestDTOResponse response = new CalculateRequestDTOResponse();
+        response.setSubtotal(subtotal);
+        response.setDeliveryFee(deliveryFee);
+        response.setTotal(total);
+
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<RequestDTOResponse> listRequest(LocalDateTime start, LocalDateTime end, Pageable pageable) {
         Page<Request> requests;
         
@@ -195,38 +227,6 @@ public class RequestServiceImpl implements RequestServiceInterface {
         Request updatedRequest = requestRepository.save(request);
 
         return modelMapper.map(updatedRequest, RequestDTOResponse.class);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public CalculateRequestDTOResponse calculateTotalRequest(CalculateRequestDTORequest request) {
-        BigDecimal subtotal = BigDecimal.ZERO;
-
-        for (ItemRequestDTO item : request.getItems()) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
-
-            BigDecimal subtotalItem = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-            subtotal = subtotal.add(subtotalItem);
-        }
-
-        // Buscar taxa de entrega do restaurante se fornecido
-        BigDecimal deliveryFee = BigDecimal.ZERO;
-        if (request.getRestaurantId() != null) {
-            Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
-                    .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
-            deliveryFee = restaurant.getDeliveryFee();
-        }
-
-        BigDecimal total = subtotal.add(deliveryFee);
-
-        // Criar e retornar o DTO de resposta
-        CalculateRequestDTOResponse response = new CalculateRequestDTOResponse();
-        response.setSubtotal(subtotal);
-        response.setDeliveryFee(deliveryFee);
-        response.setTotal(total);
-
-        return response;
     }
 
     @Override

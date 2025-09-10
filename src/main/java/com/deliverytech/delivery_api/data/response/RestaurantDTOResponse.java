@@ -45,6 +45,16 @@ public class RestaurantDTOResponse {
     @NotBlank(message = "Horário de funcionamento é obrigatório")
     private String workHours;
 
+    @Schema(description = "Zip code", example = "08:00-22:00")
+    @NotBlank(message = "Código postal é obrigatório")
+    private String zip;
+
+    @Schema(description = "Evaluation", example = "0")
+    private Integer evaluation;
+
+    @Schema(description = "Active", example = "0")
+    private boolean active;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -69,4 +79,13 @@ public class RestaurantDTOResponse {
 
     public String getWorkHours() { return workHours; }
     public void setWorkHours(String workHours) { this.workHours = workHours; }
+
+    public String getZip() { return zip; }
+    public void setZip(String zip) { this.zip = zip; }
+
+    public Integer getEvaluation() { return evaluation; }
+    public void setEvaluation(Integer evaluation) { this.evaluation = evaluation; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

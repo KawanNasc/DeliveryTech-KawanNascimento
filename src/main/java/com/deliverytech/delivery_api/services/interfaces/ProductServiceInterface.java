@@ -20,5 +20,6 @@ public interface ProductServiceInterface {
 
     List<ProductDTOResponse> searchProductsByName(String name);
 
+    // Restando
     List<ProductDTOResponse> findProductsByRestaurant(Long restaurantId, Boolean available);
 }

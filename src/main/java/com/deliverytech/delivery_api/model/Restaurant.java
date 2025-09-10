@@ -20,7 +20,8 @@ public class Restaurant {
     private BigDecimal deliveryFee;
     private Integer deliveryTime;
     private String workHours;
-    private int evaluation;
+    private String zip;
+    private Integer evaluation;
     private boolean active;
 
     @OneToMany(mappedBy = "restaurant")

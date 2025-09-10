@@ -12,7 +12,7 @@ import java.util.List;
 public interface RestaurantServiceInterface {
     RestaurantDTOResponse register(RestaurantDTORequest dto);
 
-    Page<RestaurantDTOResponse> listActive(String category, boolean active, Pageable pageable);
+    Page<RestaurantDTOResponse> listActive(String category, Pageable pageable);
 
     RestaurantDTOResponse findRestaurantById(Long id);
 
@@ -25,5 +25,4 @@ public interface RestaurantServiceInterface {
     List<RestaurantDTOResponse> findNearbyRestaurants(String zip, Integer radius);
 
     BigDecimal calculateDeliveryFee(Long id, String zip);
-
 }

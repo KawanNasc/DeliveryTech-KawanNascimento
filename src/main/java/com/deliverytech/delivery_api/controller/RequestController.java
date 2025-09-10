@@ -63,7 +63,7 @@ public class RequestController {
         }
 
         // Calcular o total do pedido
-        @PostMapping("/calcular")
+        @PostMapping("/calculate")
         @Operation(summary = "Calculate order total", description = "Calculates the total of an order without saving it")
         @ApiResponses({
                         @ApiResponse(responseCode = "200", description = "Total calculated successfully"),
@@ -127,7 +127,6 @@ public class RequestController {
         public ResponseEntity<ApiResponseWrapper<RequestDTOResponse>> updateStatusRequest(
                         @Parameter(description = "Request ID") @PathVariable Long id,
                         @Valid @RequestBody StatusRequestDTORequest statusRequestDTO) {
-                // Falta o updateStatusRequest
                 RequestDTOResponse request = requestServiceInt.updateStatusRequesT(id, statusRequestDTO);
                 ApiResponseWrapper<RequestDTOResponse> response = new ApiResponseWrapper<>(true, request,
                                 "Status updated successfully");

@@ -5,7 +5,6 @@ import com.deliverytech.delivery_api.config.PagedResponseWrapper;
 
 import com.deliverytech.delivery_api.data.request.RestaurantDTORequest;
 import com.deliverytech.delivery_api.data.response.RestaurantDTOResponse;
-import com.deliverytech.delivery_api.data.request.ProductDTORequest;
 import com.deliverytech.delivery_api.data.response.ProductDTOResponse;
 
 import com.deliverytech.delivery_api.services.interfaces.RestaurantServiceInterface;
@@ -35,7 +34,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @Tag(name = "Restaurants", description = "Operations related to restaurants")
 public class RestaurantController {
-    @Autowired
+@Autowired
     private RestaurantServiceInterface restaurantServiceInt;
 
     @Autowired
@@ -49,7 +48,9 @@ public class RestaurantController {
             @ApiResponse(responseCode = "409", description = "Restaurant exists")
     })
     public ResponseEntity<ApiResponseWrapper<RestaurantDTOResponse>> register(
-            @Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Creating restaurant data") RestaurantDTORequest dto) {
+            @Valid @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Creating restaurant data")
+            RestaurantDTORequest dto) {
         RestaurantDTOResponse restaurant = restaurantServiceInt.register(dto);
         ApiResponseWrapper<RestaurantDTOResponse> response = new ApiResponseWrapper<>(true, restaurant,
                 "Restaurant created with success");
@@ -63,9 +64,8 @@ public class RestaurantController {
     })
     public ResponseEntity<PagedResponseWrapper<RestaurantDTOResponse>> listRestaurants(
             @Parameter(description = "Restaurant category") @RequestParam(required = false) String category,
-            @Parameter(description = "Restaurant status") @RequestParam(required = false) boolean active,
             @Parameter(description = "Pagination parameters") Pageable pageable) {
-        Page<RestaurantDTOResponse> restaurants = restaurantServiceInt.listActive(category, active, pageable);
+        Page<RestaurantDTOResponse> restaurants = restaurantServiceInt.listActive(category, pageable);
         PagedResponseWrapper<RestaurantDTOResponse> response = new PagedResponseWrapper<>(restaurants);
         return ResponseEntity.ok(response);
     }
@@ -84,42 +84,11 @@ public class RestaurantController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update restaurant", description = "Updates the data of an existing restaurant")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Restaurant updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Restaurant not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid data")
-    })
-    public ResponseEntity<ApiResponseWrapper<RestaurantDTOResponse>> update(
-            @Parameter(description = "Restaurant ID") @PathVariable Long id,
-            @Valid @RequestBody RestaurantDTORequest dto) {
-        RestaurantDTOResponse restaurant = restaurantServiceInt.updateRestaurant(id, dto);
-        ApiResponseWrapper<RestaurantDTOResponse> response = new ApiResponseWrapper<>(true, restaurant,
-                "Restaurant updated successfully");
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/{id}/status")
-    @Operation(summary = "Activate/Deactivate restaurant", description = "Toggles the active/inactive status of the restaurant")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Status changed successfully"),
-            @ApiResponse(responseCode = "404", description = "Restaurant not found")
-    })
-    public ResponseEntity<ApiResponseWrapper<RestaurantDTOResponse>> changeStatus(
-            @Parameter(description = "Restaurant ID") @PathVariable Long id) {
-        RestaurantDTOResponse restaurant = restaurantServiceInt.changeRestaurantStatus(id);
-        ApiResponseWrapper<RestaurantDTOResponse> response = new ApiResponseWrapper<>(true, restaurant,
-                "Status changed successfully");
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/category/{category}")
     @Operation(summary = "Find by category", description = "Lists restaurants of a specific category")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Restaurants found")
     })
-
     public ResponseEntity<ApiResponseWrapper<List<RestaurantDTOResponse>>> findByCategory(
             @Parameter(description = "Restaurant category") @PathVariable String category) {
         List<RestaurantDTOResponse> restaurants = restaurantServiceInt.findRestaurantsByCategory(category);
@@ -168,6 +137,36 @@ public class RestaurantController {
         List<ProductDTOResponse> products = productServiceInt.findProductsByRestaurant(restaurantId, available);
         ApiResponseWrapper<List<ProductDTOResponse>> response = new ApiResponseWrapper<>(true, products,
                 "Products found");
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update restaurant", description = "Updates the data of an existing restaurant")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Restaurant updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid data")
+    })
+    public ResponseEntity<ApiResponseWrapper<RestaurantDTOResponse>> update(
+            @Parameter(description = "Restaurant ID") @PathVariable Long id,
+            @Valid @RequestBody RestaurantDTORequest dto) {
+        RestaurantDTOResponse restaurant = restaurantServiceInt.updateRestaurant(id, dto);
+        ApiResponseWrapper<RestaurantDTOResponse> response = new ApiResponseWrapper<>(true, restaurant,
+                "Restaurant updated successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Activate/Deactivate restaurant", description = "Toggles the active/inactive status of the restaurant")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Status changed successfully"),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found")
+    })
+    public ResponseEntity<ApiResponseWrapper<RestaurantDTOResponse>> changeStatus(
+            @Parameter(description = "Restaurant ID") @PathVariable Long id) {
+        RestaurantDTOResponse restaurant = restaurantServiceInt.changeRestaurantStatus(id);
+        ApiResponseWrapper<RestaurantDTOResponse> response = new ApiResponseWrapper<>(true, restaurant,
+                "Status changed successfully");
         return ResponseEntity.ok(response);
     }
 }

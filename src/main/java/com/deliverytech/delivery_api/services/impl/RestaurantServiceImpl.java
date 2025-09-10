@@ -41,19 +41,20 @@ public class RestaurantServiceImpl implements RestaurantServiceInterface {
         restaurant.setDeliveryFee(dto.getDeliveryFee());
         restaurant.setDeliveryTime(dto.getDeliveryTime());
         restaurant.setWorkHours(dto.getWorkHours());
-        restaurant.setActive(true); // New restaurants are active by default
+        restaurant.setEvaluation(dto.getEvaluation());
+        restaurant.setActive(true);
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return toDTOResponse(savedRestaurant);
     }
 
     @Override
-    public Page<RestaurantDTOResponse> listActive(String category, boolean active, Pageable pageable) {
+    public Page<RestaurantDTOResponse> listActive(String category, Pageable pageable) {
         Page<Restaurant> restaurants;
         if (category != null && !category.isBlank()) {
-            restaurants = restaurantRepository.findByCategoryAndActiveTrue(category, active, pageable);
+            restaurants = restaurantRepository.findByCategoryAndActiveTrue(category, pageable);
         } else {
-            restaurants = restaurantRepository.findByActiveTrue(active, pageable);
+            restaurants = restaurantRepository.findByActiveTrue(pageable);
         }
         return restaurants.map(this::toDTOResponse);
     }
@@ -63,6 +64,34 @@ public class RestaurantServiceImpl implements RestaurantServiceInterface {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
         return toDTOResponse(restaurant);
+    }
+
+    @Override
+    public List<RestaurantDTOResponse> findRestaurantsByCategory(String category) {
+        List<Restaurant> restaurants = restaurantRepository.findByCategory(category);
+        return restaurants.stream().map(this::toDTOResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public BigDecimal calculateDeliveryFee(Long id, String zip) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
+
+        // Simplified delivery fee calculation: base fee + additional based on ZIP
+        // In a real system, this would involve geolocation or ZIP code-based logic
+        BigDecimal baseFee = restaurant.getDeliveryFee();
+        BigDecimal additionalFee = calculateAdditionalFee(zip); // Hypothetical method
+        return baseFee.add(additionalFee);
+    }
+
+    @Override
+    public List<RestaurantDTOResponse> findNearbyRestaurants(String zip, Integer radius) {
+        // Simplified logic: Assume a method to filter restaurants by ZIP code proximity
+        // In a real system, this would use geolocation services or a ZIP code database
+        List<Restaurant> restaurants = restaurantRepository.findAll().stream()
+                .filter(restaurant -> isWithinRadius(restaurant.getAddress(), zip, radius)) // Hypothetical method
+                .collect(Collectors.toList());
+        return restaurants.stream().map(this::toDTOResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -98,34 +127,6 @@ public class RestaurantServiceImpl implements RestaurantServiceInterface {
         return toDTOResponse(updatedRestaurant);
     }
 
-    @Override
-    public List<RestaurantDTOResponse> findRestaurantsByCategory(String category) {
-        List<Restaurant> restaurants = restaurantRepository.findByCategory(category);
-        return restaurants.stream().map(this::toDTOResponse).collect(Collectors.toList());
-    }
-
-    @Override
-    public BigDecimal calculateDeliveryFee(Long id, String zip) {
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
-
-        // Simplified delivery fee calculation: base fee + additional based on ZIP
-        // In a real system, this would involve geolocation or ZIP code-based logic
-        BigDecimal baseFee = restaurant.getDeliveryFee();
-        BigDecimal additionalFee = calculateAdditionalFee(zip); // Hypothetical method
-        return baseFee.add(additionalFee);
-    }
-
-    @Override
-    public List<RestaurantDTOResponse> findNearbyRestaurants(String zip, Integer radius) {
-        // Simplified logic: Assume a method to filter restaurants by ZIP code proximity
-        // In a real system, this would use geolocation services or a ZIP code database
-        List<Restaurant> restaurants = restaurantRepository.findAll().stream()
-                .filter(restaurant -> isWithinRadius(restaurant.getAddress(), zip, radius)) // Hypothetical method
-                .collect(Collectors.toList());
-        return restaurants.stream().map(this::toDTOResponse).collect(Collectors.toList());
-    }
-
     // Helper method to convert Restaurant entity to RestaurantDTOResponse
     private RestaurantDTOResponse toDTOResponse(Restaurant restaurant) {
         RestaurantDTOResponse dto = new RestaurantDTOResponse();
@@ -137,6 +138,9 @@ public class RestaurantServiceImpl implements RestaurantServiceInterface {
         dto.setDeliveryFee(restaurant.getDeliveryFee());
         dto.setDeliveryTime(restaurant.getDeliveryTime());
         dto.setWorkHours(restaurant.getWorkHours());
+        dto.setZip(restaurant.getZip());
+        dto.setEvaluation(restaurant.getEvaluation());
+        dto.setActive(restaurant.isActive());
         return dto;
     }
 

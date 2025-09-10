@@ -1,7 +1,9 @@
 package com.deliverytech.delivery_api.data.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.*;
+
 import java.math.BigDecimal;
 
 @Schema(description = "Data for restaurant register")
@@ -21,7 +23,7 @@ public class RestaurantDTORequest {
 
     @Schema(description = "Phone for contact", example = "11999999999")
     @NotBlank(message = "Telefone é obrigatórip")
-    @Pattern(regexp = "\\d{10, 11}", message = "Telefone deve ter 10-11 dígitos")
+    @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter 10-11 dígitos")
     private String phone;
 
     @Schema(description = "Delivery fee in R$", example = "5.50", minimum = "0")
@@ -38,6 +40,16 @@ public class RestaurantDTORequest {
     @Schema(description = "Work hours", example = "08:00-22:00")
     @NotBlank(message = "Horário de funcionamento é obrigatório")
     private String workHours;
+
+    @Schema(description = "Zip code", example = "08:00-22:00")
+    @NotBlank(message = "Código postal é obrigatório")
+    private String zip;
+
+    @Schema(description = "Evaluation", example = "0")
+    private Integer evaluation;
+
+    @Schema(description = "Active", example = "0")
+    private boolean active;
 
     // Getters e Setters
     public String getName() { return name; }
@@ -60,4 +72,13 @@ public class RestaurantDTORequest {
 
     public String getWorkHours() { return workHours; }
     public void setWorkHours(String workHours) { this.workHours = workHours; }
+
+    public String getZip() { return zip; }
+    public void setZip(String zip) { this.zip = zip; }
+
+    public Integer getEvaluation() { return evaluation; }
+    public void setEvaluation(Integer evaluation) { this.evaluation = evaluation; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

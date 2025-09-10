@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 
 public class StatusRequestDTORequest {
-
     @NotNull(message = "Status é obrigatório")
     @JsonProperty("status")
     private StatusRequest statusRequest;

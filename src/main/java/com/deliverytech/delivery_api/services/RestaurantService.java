@@ -43,14 +43,14 @@ public class RestaurantService {
 
     // Listar restaurantes ativos
     @Transactional(readOnly = true)
-    public Page<Restaurant> listActive(boolean active, Pageable pageable) {
-        return restaurantRepository.findByActiveTrue(active, pageable);
+    public Page<Restaurant> listActive(Pageable pageable) {
+        return restaurantRepository.findByActiveTrue(pageable);
     }
 
     // Buscar p/ categoria
     @Transactional(readOnly = true)
-    public Page<Restaurant> findPerCategory(String category, boolean active, Pageable pageable) {
-        return restaurantRepository.findByCategoryAndActiveTrue(category, active, pageable);
+    public Page<Restaurant> findPerCategory(String category, Pageable pageable) {
+        return restaurantRepository.findByCategoryAndActiveTrue(category, pageable);
     }
 
     // Atualizar restaurante

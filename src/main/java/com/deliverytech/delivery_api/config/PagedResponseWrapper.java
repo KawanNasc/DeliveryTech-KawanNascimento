@@ -74,8 +74,6 @@ public class PagedResponseWrapper<T> {
         public int getTotalPages() { return totalPages; }
         public boolean isFirst() { return first; }
         public boolean isLast() { return last; }
-        public boolean getFirst() { return first; }
-        public boolean getlast() { return last;  }
     }
 
     @Schema(description = "Navigation links")
