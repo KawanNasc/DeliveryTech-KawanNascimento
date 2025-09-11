@@ -92,6 +92,16 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
+    @Transactional(readOnly = true)
+    public List<Request> listAll() {
+        return requestRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Request> findPerId(Long id) {
+        return requestRepository.findById(id);
+    }
+
     // Confirmar pedido
     public Request confirmRequest(Long id) {
         Request request = findPerId(id)
@@ -109,11 +119,6 @@ public class RequestService {
 
         request.setStatusRequest(StatusRequest.CONFIRMADO);
         return requestRepository.save(request);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Request> findPerId(Long id) {
-        return requestRepository.findById(id);
     }
 
     // Listar pedidos p/ cliente

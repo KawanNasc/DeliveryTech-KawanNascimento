@@ -30,5 +30,9 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant")
     @JsonIgnore
+    private List<User> users;
+
+    @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
     private List<Request> requests;
 }

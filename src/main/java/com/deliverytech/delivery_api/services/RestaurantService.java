@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.services;
 
+import com.deliverytech.delivery_api.model.Request;
 import com.deliverytech.delivery_api.model.Restaurant;
 
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +35,11 @@ public class RestaurantService {
         restaurant.setActive(true);
 
         return restaurantRepository.save(restaurant);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Restaurant> listAll() {
+        return restaurantRepository.findAll();
     }
 
     // Buscar por ID
@@ -80,6 +87,16 @@ public class RestaurantService {
 
         restaurant.setActive(false);
         restaurantRepository.save(restaurant);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        if (restaurantOptional.isPresent()) {
+            restaurantRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Restaurant not found with id: " + id);
+        }
     }
 
     private void validateDataRestaurant(Restaurant restaurant) {

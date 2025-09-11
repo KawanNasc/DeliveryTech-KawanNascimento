@@ -4,6 +4,7 @@ import com.deliverytech.delivery_api.data.request.StatusRequestDTORequest;
 import com.deliverytech.delivery_api.enums.StatusRequest;
 import com.deliverytech.delivery_api.model.*;
 import com.deliverytech.delivery_api.repository.*;
+import com.deliverytech.delivery_api.repository.interfaces.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -29,22 +30,25 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Iniciando carga de dados de teste");
 
         // Utilizando apenas inserção de dados no data.sql = Descomente
         // Código comentado para não executar conflito de relacionamento em métodos
-        // insert não existentes
         requestRepository.deleteAll();
         productRepository.deleteAll();
+        userRepository.deleteAll();
         restaurantRepository.deleteAll();
         clientRepository.deleteAll();
 
-        insertClients();
-        insertRestaurants();
-        insertProducts();
-        insertRequests();
+        // insertClients();
+        // insertRestaurants();
+        // insertProducts();
+        // insertRequests();
 
         testSelects();
 

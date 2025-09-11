@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.services;
 
 import com.deliverytech.delivery_api.model.Product;
+import com.deliverytech.delivery_api.model.Request;
 import com.deliverytech.delivery_api.model.Restaurant;
 
 import com.deliverytech.delivery_api.repository.ProductRepository;
@@ -35,6 +36,11 @@ public class ProductService {
         product.setAvailable(true);
 
         return productRepository.save(product);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> listAll() {
+        return productRepository.findAll();
     }
 
     // Buscar p/ ID
@@ -92,6 +98,16 @@ public class ProductService {
 
         if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Preço devce ser maior que zero");
+        }
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        if (restaurantOptional.isPresent()) {
+            restaurantRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Restaurant not found with id: " + id);
         }
     }
 }
