@@ -10,7 +10,9 @@ public class RequestDTOResponse {
     private Long id;
     private LocalDateTime dateRequest;
     private String note;
+    private String paymentWay;
     private String deliveryAddress;
+    private String cep;
     private BigDecimal subtotal;
     private BigDecimal deliveryFee;
     private Integer deliveryTime;
@@ -30,8 +32,14 @@ public class RequestDTOResponse {
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
 
+    public String getPaymentWay() { return paymentWay; }
+    public void setPaymentWay(String paymentWay) { this.paymentWay = paymentWay; }
+
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
     
     public BigDecimal getSubtotal() { return subtotal; }
     public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }

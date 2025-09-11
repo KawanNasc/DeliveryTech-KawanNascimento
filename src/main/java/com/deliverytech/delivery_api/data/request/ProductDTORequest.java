@@ -29,6 +29,10 @@ public class ProductDTORequest {
     @NotNull(message = "Disponibilidade é obrigatória")
     private Boolean available;
 
+    @Pattern(regexp = "^(https?://).*\\.(jpg|jpeg|png|gif)", 
+        message = "URL da imagem deve ser válida e ter formato JPG, JPEG, PNG ou GIF")
+    private String urlImage;
+
     @Schema(description = "Restaurant's unique identifier", example = "1")
     @NotNull(message = "ID do restaurante é obrigatório")
     @Positive(message = "ID do restaurante deve ser positivo")
@@ -49,6 +53,9 @@ public class ProductDTORequest {
 
     public Boolean getAvailable() { return available; }
     public void setAvailable(Boolean available) { this.available = available; }
+
+    public String getUrlImage() { return urlImage; }
+    public void setUrlImage(String urlImage) { this.urlImage = urlImage; }
 
     public Long getRestaurantId() { return restaurantId; }
     public void setRestaurantId(Long restaurantId) { this.restaurantId = restaurantId; }

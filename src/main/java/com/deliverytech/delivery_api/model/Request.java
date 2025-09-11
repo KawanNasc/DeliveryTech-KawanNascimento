@@ -19,7 +19,9 @@ public class Request {
     private Long id;
     private LocalDateTime dateRequest;
     private String note;
+    private String paymentWay;
     private String deliveryAddress;
+    private String cep;
     private BigDecimal subtotal;
     private BigDecimal deliveryFee;
     private Integer deliveryTime;

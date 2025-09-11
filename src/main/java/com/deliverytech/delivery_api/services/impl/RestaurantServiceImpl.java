@@ -20,7 +20,6 @@ public class RestaurantServiceImpl implements RestaurantServiceInterface {
 
     private final RestaurantRepository restaurantRepository;
 
-    @Autowired
     public RestaurantServiceImpl(RestaurantRepository restaurantRepository) {
         this.restaurantRepository = restaurantRepository;
     }

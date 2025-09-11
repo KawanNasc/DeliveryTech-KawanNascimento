@@ -3,6 +3,8 @@ package com.deliverytech.delivery_api.data.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.*;
+import com.deliverytech.delivery_api.validation.valid.PhoneValid;
+import com.deliverytech.delivery_api.validation.valid.CategoryValid;
 
 import java.math.BigDecimal;
 
@@ -13,8 +15,8 @@ public class RestaurantDTORequest {
     @Size(min = 2, max = 100, message = "Nome deve ter entre 2-100 caracteres")
     private String name;
 
-    @Schema(description = "Restauran's category", example = "Italiana", allowableValues = {"Italiana", "Brasileira", "Japonesa", "Mexicana", "Árabe"})
-    @NotBlank(message = "Categoria é obrigatória")
+    @Schema(description = "Restaurant's category", example = "Italiana", allowableValues = {"Italiana", "Brasileira", "Japonesa", "Mexicana", "Árabe"})
+    @CategoryValid
     private String category;
 
     @Schema(description = "Restaurant's complete address", example = "Rua das Flores, 123 - Centro")
@@ -22,8 +24,9 @@ public class RestaurantDTORequest {
     private String address;
 
     @Schema(description = "Phone for contact", example = "11999999999")
-    @NotBlank(message = "Telefone é obrigatórip")
+    @NotBlank(message = "Telefone é obrigatório")
     @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter 10-11 dígitos")
+    @PhoneValid
     private String phone;
 
     @Schema(description = "Delivery fee in R$", example = "5.50", minimum = "0")

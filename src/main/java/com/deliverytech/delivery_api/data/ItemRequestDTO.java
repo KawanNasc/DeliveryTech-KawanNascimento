@@ -7,16 +7,20 @@ import java.math.BigDecimal;
 public class ItemRequestDTO {
     @NotNull(message = "Quantidade é obrigatório")
     @Min(value = 1, message = "Quantidade deve ser pelo menos 1")
-    @Max(value = 10, message = "Quantidade máxima é 10")
+    @Max(value = 50, message = "Quantidade máxima é 50")
     private Integer quantity;
     
-    @NotBlank(message = "Valor unitário é obrigatório")
+    @NotNull(message = "Valor unitário é obrigatório")
     private BigDecimal unitaryPrice;
 
-    @NotBlank(message = "Subtotal é obrigatório")
+    @NotNull(message = "Subtotal é obrigatório")
     private BigDecimal subtotal;
 
+    @Size(max = 200, message = "Observações não podem exceder 200 caracteres")
+    private String note;
+
     @NotNull(message = "Produto é obrigatório")
+    @Positive(message = "ID do produto deve ser positivo")
     private Long productId;
 
     // Getters e Setters

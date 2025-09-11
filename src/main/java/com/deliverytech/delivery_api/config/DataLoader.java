@@ -120,7 +120,7 @@ public class DataLoader implements CommandLineRunner {
         product1.setCategory("Panqueca");
         product1.setAvailable(true);
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(4L);
+        restaurant.setId(1L);
         product1.setRestaurant(restaurant);
 
         productRepository.saveAll(Arrays.asList(product1));
@@ -134,7 +134,9 @@ public class DataLoader implements CommandLineRunner {
         Request request = new Request();
         request.setDateRequest(LocalDateTime.now());
         request.setNote("Pedio a ser entregue");
+        request.setPaymentWay("PIX");
         request.setDeliveryAddress("Av. Principal, 100");
+        request.setCep("00000-000");
         request.setSubtotal(new BigDecimal(10));
         request.setDeliveryFee(new BigDecimal(10));
         request.setDeliveryTime(25);
@@ -147,18 +149,18 @@ public class DataLoader implements CommandLineRunner {
         request.setStatusRequest(statusRequestDTO.getStatusRequest());
 
         Client client = new Client();
-        client.setId(4L);
+        client.setId(1L);
         request.setClient(client);
 
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(4L);
+        restaurant.setId(1L);
         request.setRestaurant(restaurant);
 
         List<ItemRequest> items = new ArrayList<>();
 
         ItemRequest item1 = new ItemRequest();
         Product product1 = new Product();
-        product1.setId(10L); // ID do produto Guaravita
+        product1.setId(1L); // ID do produto Guaravita
         item1.setQuantity(2);
         item1.setUnitaryPrice(new BigDecimal(10));
         item1.setSubtotal(new BigDecimal(10));
@@ -168,7 +170,7 @@ public class DataLoader implements CommandLineRunner {
 
         ItemRequest item2 = new ItemRequest();
         Product product2 = new Product();
-        product2.setId(10L); // ID do produto Guaravita
+        product2.setId(1L); // ID do produto Guaravita
         item2.setQuantity(1);
         item2.setUnitaryPrice(new BigDecimal(10));
         item2.setSubtotal(new BigDecimal(10));

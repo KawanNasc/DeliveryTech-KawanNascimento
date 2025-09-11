@@ -137,9 +137,9 @@ public class RequestController {
         @DeleteMapping("/{id}")
         @Operation(summary = "Cancel order", description = "Cancels an request if possible")
         @ApiResponses({
-                @ApiResponse(responseCode = "204", description = "Request canceled successfully"),
-                @ApiResponse(responseCode = "404", description = "Request not found"),
-                @ApiResponse(responseCode = "400", description = "Request cannot be canceled")
+                        @ApiResponse(responseCode = "204", description = "Request canceled successfully"),
+                        @ApiResponse(responseCode = "404", description = "Request not found"),
+                        @ApiResponse(responseCode = "400", description = "Request cannot be canceled")
         })
         public ResponseEntity<Void> cancelRequest(@Parameter(description = "Request ID") @PathVariable Long id) {
                 requestServiceInt.cancelRequest(id);

@@ -103,13 +103,19 @@ public class RequestServiceImpl implements RequestServiceInterface {
 
         // 5. Salvar pedido
         Request request = new Request();
-        request.setClient(client);
-        request.setRestaurant(restaurant);
         request.setDateRequest(LocalDateTime.now());
-        request.setStatusRequest(StatusRequest.PENDENTE);
+        request.setNote(dto.getNote());
+        request.setPaymentWay(dto.getPaymentWay());
+        request.setDeliveryAddress(dto.getDeliveryAddress());
+        request.setCep(dto.getCep());
         request.setSubtotal(subtotal);
         request.setDeliveryFee(deliveryFee);
+        request.setDeliveryTime(dto.getDeliveryTime());
+        request.setWorkHours(dto.getWorkHours());
         request.setTotalValue(totalValue);
+        request.setClient(client);
+        request.setRestaurant(restaurant);
+        request.setStatusRequest(StatusRequest.PENDENTE);
 
         Request savedRequest = requestRepository.save(request);
 
@@ -126,10 +132,18 @@ public class RequestServiceImpl implements RequestServiceInterface {
         // 8. Montar resposta manualmente
         RequestDTOResponse response = new RequestDTOResponse();
         response.setId(savedRequest.getId());
+        response.setDateRequest(savedRequest.getDateRequest());
+        response.setNote(savedRequest.getNote());
+        response.setPaymentWay(dto.getPaymentWay());
+        response.setDeliveryAddress(savedRequest.getDeliveryAddress());
+        response.setCep(savedRequest.getCep());
+        response.setSubtotal(savedRequest.getSubtotal());
+        response.setDeliveryFee(savedRequest.getDeliveryFee());
+        response.setDeliveryTime(savedRequest.getDeliveryTime());
+        response.setWorkHours(savedRequest.getWorkHours());
+        response.setTotalValue(totalValue);
         response.setClientId(savedRequest.getClient().getId());
         response.setRestaurantId(savedRequest.getRestaurant().getId());
-        response.setDeliveryAddress(savedRequest.getDeliveryAddress());
-        response.setNote(savedRequest.getNote());
 
         // 9. Mapear itens para DTO
         List<ItemRequestDTO> itemDTOs = savedRequest.getItemsRequest().stream()
