@@ -51,4 +51,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
+
+    public long listAll() {
+        return userRepository.countByRole(Role.CLIENT);
+    }
 }

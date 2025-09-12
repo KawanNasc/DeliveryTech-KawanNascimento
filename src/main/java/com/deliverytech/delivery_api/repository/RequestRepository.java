@@ -36,6 +36,9 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     // 10 pedidos mais recentes
     List<Request> findTop10ByOrderByDateRequestDesc();
 
+    // New method for counting
+    long countByDateRequestBetween(LocalDateTime start, LocalDateTime end);
+
     // Buscar pedidos do dia
     @Query(value = "SELECT * FROM request " +
             "WHERE DATE(dateRequest) = CURRENT_DATE " +

@@ -1,18 +1,23 @@
 package com.deliverytech.delivery_api.controller;
 
+import com.deliverytech.delivery_api.enums.StatusRequest;
 import com.deliverytech.delivery_api.model.Request;
 
 import com.deliverytech.delivery_api.services.RequestService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +33,7 @@ import java.util.Optional;
 
 // import com.deliverytech.delivery_api.services.interfaces.RequestServiceInterface;
 
-// import io.swagger.v3.oas.annotations.Operation;
 // import io.swagger.v3.oas.annotations.Parameter;
-
-// import io.swagger.v3.oas.annotations.responses.ApiResponse;
-// import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 // import org.springframework.data.domain.Page;
 // import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ import java.util.Optional;
 // import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/request")
+@RequestMapping("/api/request")
 @CrossOrigin(origins = "*")
 @Tag(name = "Requests", description = "Operations related with request")
 public class RequestController {
@@ -52,7 +53,16 @@ public class RequestController {
 
         @PostMapping
         @PreAuthorize("hasRole('CLIENT')")
-        public ResponseEntity<Request> create(@RequestParam Long clientId,
+        @Operation(summary = "Create request", description = "Creates a new request in the system", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {
+                        "Requests" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "request created successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid data"),
+                        @ApiResponse(responseCode = "404", description = "Customer or restaurant not found"),
+                        @ApiResponse(responseCode = "409", description = "Product unavailable")
+        })
+        public ResponseEntity<Request> create(
+                        @Parameter(description = "Dados do pedido a ser criado") @RequestParam Long clientId,
                         @RequestParam Long restaurantId) {
                 Request newRequest = requestService.createRequest(clientId, restaurantId);
                 return ResponseEntity.status(201).body(newRequest);
@@ -60,16 +70,38 @@ public class RequestController {
 
         @GetMapping
         @PreAuthorize("hasRole('ADMIN')")
+        @Operation(summary = "List requests", description = "Lists requests with optional filters and pagination", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {
+                        "Requests" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "List retrieved successfully")
+        })
         public ResponseEntity<List<Request>> list() {
                 List<Request> requests = requestService.listAll();
                 return ResponseEntity.ok(requests);
         }
 
-        @GetMapping("/my")
+        @GetMapping("/my/{id}")
         @PreAuthorize("hasRole('CLIENT')")
-        public ResponseEntity<Optional<Request>> listMyRequests(@Valid @RequestBody Long id) {
-                Optional<Request> requests = requestService.findPerId(id);
-                return ResponseEntity.ok(requests);
+        @Operation(summary = "Find request by ID", description = "Retrieves a specific request with all details", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {
+                        "Requests" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Request found"),
+                        @ApiResponse(responseCode = "404", description = "Request not found")
+        })
+        public ResponseEntity<Optional<Request>> listMyRequests(@PathVariable Long id) {
+                Optional<Request> request = requestService.findPerId(id);
+                return ResponseEntity.ok(request);
+        }
+
+        @PutMapping("/{id}/status")
+        @PreAuthorize("hasRole('RESTAURANT') or hasRole('ADMIN')")
+        @Operation(summary = "Update request status", description = "Update the status of the request", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {
+                        "Requests" })
+        public ResponseEntity<Request> atualizarStatus(
+                        @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id,
+                        @Parameter(description = "Novo status do pedido") @RequestParam StatusRequest status) {
+                Request updatedRequest = requestService.updateStatusRequest(id, status);
+                return ResponseEntity.ok(updatedRequest);
         }
 
         // @Autowired

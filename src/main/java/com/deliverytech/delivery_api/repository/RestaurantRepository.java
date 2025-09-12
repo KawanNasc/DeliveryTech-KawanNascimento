@@ -44,9 +44,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     // Top 5 restaurantes p/ nome (Ordem alfabética)
     List<Restaurant> findTop5ByOrderByNameAsc();
 
+    List<Restaurant> findAll();
+
     boolean existsByNameAndAddress(String name, String address);
 
     boolean existsByNameAndAddressAndIdNot(String name, String address, Long id);
+
+    long countByActiveTrue();
 
     // Query personalizada - restaurantes com produtos
     @Query(value = "SELECT DISTINCT * FROM restaurant r " +

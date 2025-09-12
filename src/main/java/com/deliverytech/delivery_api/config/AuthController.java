@@ -11,6 +11,15 @@ import com.deliverytech.delivery_api.security.SecurityUtils;
 
 import com.deliverytech.delivery_api.services.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +33,9 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticação", description = "Operações de autenticação e autorização")
 @CrossOrigin(origins = "*")
 public class AuthController {
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -40,15 +49,31 @@ public class AuthController {
     private Long jwtExpiration;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDTORequest loginDTORequest) {
+    @Operation(summary = "Fazer login", description = "Autentica um usuário e retorna um token JWT", tags = {"Autenticação" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginDTOResponse.class), examples = @ExampleObject(name = "Login bem-sucedido", value = """
+                    {
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "type": "Bearer",
+                        "expiracao": 86400000,
+                        "usuario": {
+                            "id": 1,
+                            "nome": "João Silva",
+                            "email": "joao@email.com",
+                            "role": "CLIENTE"
+                        }
+                    }
+                    """))),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
+    })
+    public ResponseEntity<?> login(
+            @Parameter(description = "Credenciais de login") @Valid @RequestBody LoginDTORequest loginDTORequest) {
         try {
             // Authenticate user
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginDTORequest.getEmail(),
-                    loginDTORequest.getPassword()
-                )
-            );
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTORequest.getEmail(),
+                            loginDTORequest.getPassword()));
 
             // Load user details
             UserDetails userDetails = authService.loadUserByUsername(loginDTORequest.getEmail());
@@ -71,7 +96,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterDTORequest registerRequest) {
+    @Operation(summary = "Registrar novo usuário", description = "Cria uma nova conta de usuário no sistema", tags = {
+            "Autenticação" })
+    public ResponseEntity<?> register(
+            @Parameter(description = "Dados para criação da conta") @Valid @RequestBody RegisterDTORequest registerRequest) {
         try {
             // Check if email exists
             if (authService.existsByEmail(registerRequest.getEmail())) {

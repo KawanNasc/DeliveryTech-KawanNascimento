@@ -1,10 +1,20 @@
 package com.deliverytech.delivery_api.controller;
 
-
 import com.deliverytech.delivery_api.model.Product;
+
+import com.deliverytech.delivery_api.data.response.ProductDTOResponse;
+
 import com.deliverytech.delivery_api.services.ProductService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +31,13 @@ import java.util.List;
 // import com.deliverytech.delivery_api.data.response.ProductDTOResponse;
 // import com.deliverytech.delivery_api.services.interfaces.ProductServiceInterface;
 
-// import io.swagger.v3.oas.annotations.Operation;
 // import io.swagger.v3.oas.annotations.Parameter;
 
-// import io.swagger.v3.oas.annotations.responses.ApiResponse;
-// import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 // import org.springframework.http.HttpStatus;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 @CrossOrigin(origins = "*")
 @Tag(name = "Products", description = "Operations related to products")
 public class ProductController {
@@ -39,28 +46,57 @@ public class ProductController {
 
         @PostMapping
         @PreAuthorize("hasRole('RESTAURANT') or hasRole('ADMIN')")
-        public ResponseEntity<Product> create(@Valid @RequestBody Product product, Long restaurant_id) {
+        @Operation(summary = "Register product", description = "Creates a new product in the system", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {"Products"} )
+        @ApiResponses({
+                @ApiResponse(responseCode = "201", description = "Product createdsuccessfully"),
+                @ApiResponse(responseCode = "400", description = "Invalid data"),
+                @ApiResponse(responseCode = "404", description = "Restaurant not found")
+        })
+        public ResponseEntity<Product> create(
+                @Parameter(description = "Dados do produto a ser criado") 
+                @Valid @RequestBody Product product, Long restaurant_id
+        ) {
                 Product newProduct = productService.register(product, restaurant_id);
                 return ResponseEntity.status(201).body(newProduct);
         }
 
         @GetMapping
+        @Operation(summary = "Find products", description = "Retrieves all products", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {"Products"})
+        @ApiResponses({
+                @ApiResponse(responseCode = "200", 
+                             description = "Listed products",  
+                             content = @Content( 
+                                mediaType = "application/json", 
+                                schema = @Schema(implementation = ProductDTOResponse.class) 
+                             )),
+                @ApiResponse(responseCode = "404", description = "No products")
+        })
         public ResponseEntity<List<Product>> list() {
-                // Public endpoint - anyone can list products
                 List<Product> products = productService.listAll();
                 return ResponseEntity.ok(products);
         }
 
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or @productService.isOwner(#id)")
-        public ResponseEntity<Product> update(@PathVariable Long id,
-                        @Valid @RequestBody Product product) {
+        @Operation(summary = "Update product", description = "Updates the data of an existing product", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {"Products"})
+        @ApiResponses({
+                @ApiResponse(responseCode = "200", description = "Product updated successfully"),
+                @ApiResponse(responseCode = "404", description = "Product not found"),
+                @ApiResponse(responseCode = "400", description = "Invalid data")
+        })
+        public ResponseEntity<Product> update(@PathVariable Long id, @Valid @RequestBody Product product) {
                 Product updatedProduct = productService.update(id, product);
                 return ResponseEntity.ok(updatedProduct);
         }
 
         @DeleteMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or @productService.isOwner(#id)")
+        @Operation(summary = "Remove product", description = "Removes a product from the system", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {"Products"})
+        @ApiResponses({
+                @ApiResponse(responseCode = "204", description = "Product removed successfully"),
+                @ApiResponse(responseCode = "404", description = "Product not found"),
+                @ApiResponse(responseCode = "409", description = "Product has no associated requests")
+        })
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 productService.delete(id);
                 return ResponseEntity.noContent().build();
@@ -187,7 +223,6 @@ public class ProductController {
         // @ApiResponse(responseCode = "409", description = "Product has associated
         // requests")
         // })
-
         // public ResponseEntity<Void> remove(@Parameter(description = "Product ID")
         // @PathVariable Long id) {
         // productServiceInt.removeProduct(id);

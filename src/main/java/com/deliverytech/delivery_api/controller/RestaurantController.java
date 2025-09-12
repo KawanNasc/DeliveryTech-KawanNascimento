@@ -5,6 +5,14 @@ import com.deliverytech.delivery_api.model.Restaurant;
 import com.deliverytech.delivery_api.services.RestaurantService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
@@ -31,16 +39,9 @@ import java.util.List;
 // // import com.deliverytech.delivery_api.services.interfaces.RestaurantServiceInterface;
 // // import com.deliverytech.delivery_api.services.interfaces.ProductServiceInterface;
 
-// // import io.swagger.v3.oas.annotations.Operation;
-// // import io.swagger.v3.oas.annotations.Parameter;
-
-// import io.swagger.v3.oas.annotations.responses.ApiResponse;
-// import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.http.HttpStatus;
 // import org.springframework.http.HttpStatusCode;
-
 // import org.springframework.data.domain.Page;
 // import org.springframework.data.domain.Pageable;
 
@@ -48,9 +49,8 @@ import java.util.List;
 // import java.util.ArrayList;
 // import java.math.BigDecimal;
 
-
 @RestController
-@RequestMapping("/restaurant")
+@RequestMapping("/api/restaurant")
 @CrossOrigin(origins = "*")
 @Validated
 @Tag(name = "Restaurants", description = "Operations related to restaurants")
@@ -60,21 +60,41 @@ public class RestaurantController {
 
         @PostMapping
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<Restaurant> create(@Valid @RequestBody Restaurant restaurant) {
+        @Operation(summary = "Register restaurant", description = "Create a new restaurant in the system", security = @SecurityRequirement(name = "Bearer Authentication"), tags = {
+                        "Restaurants" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Restaurant created with success"),
+                        @ApiResponse(responseCode = "400", description = "Invalid data"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                        @ApiResponse(responseCode = "409", description = "Restaurant exists")
+        })
+        public ResponseEntity<Restaurant> create(
+                        @Parameter(description = "Dados do restaurante a ser criado") @Valid @RequestBody Restaurant restaurant) {
                 Restaurant newRestaurant = restaurantService.register(restaurant);
                 return ResponseEntity.status(201).body(newRestaurant);
         }
 
         @GetMapping
+        @Operation(summary = "List restaurants", description = "List restaurants with optional filters and pagination", tags = {
+                        "Restaurants" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Listed with success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Restaurant.class))),
+        })
         public ResponseEntity<List<Restaurant>> list() {
-                // Public endpoint - anyone can list restaurants
                 List<Restaurant> restaurants = restaurantService.listAll();
                 return ResponseEntity.ok(restaurants);
         }
 
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANT') and @restaurantService.isOwner(#id))")
-        public ResponseEntity<Restaurant> update(@PathVariable Long id,
+        @Operation(summary = "Find restaurant by ID", description = "Retrieves a specific restaurant by ID", tags = {
+                        "Restaurants" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Restaurant found"),
+                        @ApiResponse(responseCode = "404", description = "Restaurant not found")
+        })
+        public ResponseEntity<Restaurant> update(
+                        @Parameter(description = "ID do restaurante", example = "1") @PathVariable Long id,
                         @Valid @RequestBody Restaurant restaurant) {
                 Restaurant updatedRestaurant = restaurantService.update(id, restaurant);
                 return ResponseEntity.ok(updatedRestaurant);
@@ -82,6 +102,11 @@ public class RestaurantController {
 
         @DeleteMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN')")
+        @Operation(summary = "Delete restaurant", description = "Delete restaurant by ID", tags = { "Restaurants" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Restaurant deleted"),
+                        @ApiResponse(responseCode = "404", description = "Restaurant not found")
+        })
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 restaurantService.delete(id);
                 return ResponseEntity.noContent().build();

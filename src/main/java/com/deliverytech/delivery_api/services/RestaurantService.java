@@ -1,6 +1,6 @@
 package com.deliverytech.delivery_api.services;
 
-import com.deliverytech.delivery_api.model.Request;
+import com.deliverytech.delivery_api.data.response.RestaurantDTOResponse;
 import com.deliverytech.delivery_api.model.Restaurant;
 
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
@@ -97,6 +97,11 @@ public class RestaurantService {
         } else {
             throw new RuntimeException("Restaurant not found with id: " + id);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public long countActiveRestaurants() {
+        return restaurantRepository.countByActiveTrue();
     }
 
     private void validateDataRestaurant(Restaurant restaurant) {

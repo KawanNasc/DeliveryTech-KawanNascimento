@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.services;
 
+import com.deliverytech.delivery_api.data.request.SalesByRestaurantDTORequest;
 import com.deliverytech.delivery_api.enums.StatusRequest;
 
 import com.deliverytech.delivery_api.model.Client;
@@ -13,12 +14,19 @@ import com.deliverytech.delivery_api.repository.ClientRepository;
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
 import com.deliverytech.delivery_api.repository.ProductRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -150,6 +158,67 @@ public class RequestService {
     }
 
     public Request updateStatusRequest(Long id, StatusRequest statusRequest) {
-        throw new UnsupportedOperationException("Método não implementado 'updateStatusRequest' (Atualizar status do pedido).");
+        Request request = findPerId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
+
+        // Add business logic to validate status transition (e.g., only certain
+        // transitions are allowed)
+        if (request.getStatusRequest() == statusRequest) {
+            throw new IllegalArgumentException("Request is already in this status");
+        }
+
+        request.setStatusRequest(statusRequest);
+        return requestRepository.save(request);
+    }
+
+    @Transactional(readOnly = true)
+    public long countAllOrders() {
+        return requestRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalRevenue() {
+        return listAll().stream()
+                .filter(r -> r.getStatusRequest() == StatusRequest.CONFIRMADO
+                        || r.getStatusRequest() == StatusRequest.ENTREGUE)
+                .map(Request::getTotalValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalSalesBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        Page<Request> requests = requestRepository.findByDateRequestBetweenOrderByDateRequestDesc(startDate, endDate,
+                pageable);
+        return requests.stream()
+                .filter(r -> r.getStatusRequest() == StatusRequest.CONFIRMADO
+                        || r.getStatusRequest() == StatusRequest.ENTREGUE)
+                .map(Request::getTotalValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Transactional(readOnly = true)
+    public long countRequestsBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        return requestRepository.countByDateRequestBetween(startDate, endDate); // Corrected to return long
+    }
+
+    @Transactional(readOnly = true)
+    public List<SalesByRestaurantDTORequest> getSalesByRestaurantBetween(LocalDateTime startDate, LocalDateTime endDate,
+            Pageable pageable) {
+        Page<Request> requests = requestRepository.findByDateRequestBetweenOrderByDateRequestDesc(startDate, endDate,
+                pageable);
+        Map<Restaurant, BigDecimal> salesMap = requests.stream()
+                .filter(r -> r.getStatusRequest() == StatusRequest.CONFIRMADO
+                        || r.getStatusRequest() == StatusRequest.ENTREGUE)
+                .collect(Collectors.groupingBy(Request::getRestaurant,
+                        Collectors.reducing(BigDecimal.ZERO, Request::getTotalValue, BigDecimal::add)));
+
+        return salesMap.entrySet().stream()
+                .map(entry -> {
+                    SalesByRestaurantDTORequest dto = new SalesByRestaurantDTORequest();
+                    dto.setRestaurantName(entry.getKey().getName());
+                    dto.setTotal(entry.getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }
