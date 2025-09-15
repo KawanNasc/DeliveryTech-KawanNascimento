@@ -3,7 +3,8 @@ package com.deliverytech.delivery_api.services.interfaces;
 import com.deliverytech.delivery_api.data.request.ClientDTORequest;
 import com.deliverytech.delivery_api.data.response.ClientDTOResponse;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ClientServiceInterface {
     ClientDTOResponse registerClient(ClientDTORequest dto);
@@ -16,5 +17,5 @@ public interface ClientServiceInterface {
 
     ClientDTOResponse activateDesativateClient(Long id);
 
-    List<ClientDTOResponse> listActiveClients();
+    Page<ClientDTOResponse> listActiveClients(Pageable pageable);
 }

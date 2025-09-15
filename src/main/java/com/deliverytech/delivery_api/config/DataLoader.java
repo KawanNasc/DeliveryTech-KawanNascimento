@@ -8,6 +8,8 @@ import com.deliverytech.delivery_api.repository.interfaces.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -45,12 +47,14 @@ public class DataLoader implements CommandLineRunner {
         restaurantRepository.deleteAll();
         clientRepository.deleteAll();
 
-        // insertClients();
+        insertClients();
         // insertRestaurants();
         // insertProducts();
         // insertRequests();
+        Pageable pageable = PageRequest.of(0, 10);
+        testSelects(pageable);
 
-        testSelects();
+        testSelects(pageable);
 
         System.out.println("Carga de dados concluída");
     }
@@ -63,6 +67,7 @@ public class DataLoader implements CommandLineRunner {
         client1.setEmail("joao@email.com");
         client1.setPhone("11999999999");
         client1.setAddress("Rua A, 123");
+        client1.setCpf("12345678900");
         client1.setActive(true);
 
         Client client2 = new Client();
@@ -188,7 +193,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("1 pedido inserido");
     }
 
-    private void testSelects() {
+    private void testSelects(Pageable pageable) {
         System.out.println("\n Testando consultas dos repositories");
 
         System.out.println("\n Testes ClientRepository");
@@ -197,8 +202,8 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Cliente p/ e-mail: "
                 + (clientPerEmail.isPresent() ? clientPerEmail.get().getName() : "Não encontado"));
 
-        var activeClients = clientRepository.findByActiveTrue();
-        System.out.println("Clientes ativos: " + activeClients.size());
+        var activeClients = clientRepository.findByActiveTrue(pageable);
+        System.out.println("Clientes ativos na página atual: " + activeClients.getNumberOfElements());
 
         var clientsPerName = clientRepository.findByNameContainingIgnoreCase("silva");
         System.out.println("Clientes com 'silva' no nome: " + clientsPerName.size());

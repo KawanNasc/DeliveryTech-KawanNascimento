@@ -1,95 +1,73 @@
 package com.deliverytech.delivery_api.exception;
 
-// import com.deliverytech.delivery_api.exception.CustomErrorResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-// import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CustomErrorResponse> handleValidationExceptions
-        (MethodArgumentNotValidException ex, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, List<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        List<Map<String, String>> errors = ex.getBindingResult().getAllErrors().stream()
+                .map(error -> {
+                    Map<String, String> errorMap = new HashMap<>();
+                    errorMap.put("field", ((FieldError) error).getField());
+                    errorMap.put("message", error.getDefaultMessage());
+                    return errorMap;
+                })
+                .collect(Collectors.toList());
 
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Dados inválidos",
-            "Erro de validação nos dados enviados",
-            request.getDescription(false).replace("uri=", "")
-        );
-        errorResponse.setErrorCode("VALIDATION_ERROR");
-        errorResponse.setDetails(errors);
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        Map<String, List<Map<String, String>>> response = new HashMap<>();
+        response.put("errors", errors);
+        return response;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<CustomErrorResponse> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Entidade não encontrada",
-                ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
-        );
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleEntityNotFoundException(EntityNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return response;
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<CustomErrorResponse> handleConflictException(ConflictException ex, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleConflictException(ConflictException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("errorCode", ex.getErrorCode());
         if (ex.getConflictField() != null) {
-            errors.put(ex.getConflictField(), ex.getConflictValue().toString());
+            Map<String, String> details = new HashMap<>();
+            details.put(ex.getConflictField(), ex.getConflictValue().toString());
+            response.put("details", details);
         }
-
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                "Conflito de dados",
-                ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
-        );
-        errorResponse.setErrorCode(ex.getErrorCode());
-        errorResponse.setDetails(errors.isEmpty() ? null : errors);
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return response;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex, WebRequest request) {
-        CustomErrorResponse errorResponse = new CustomErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Erro interno do servidor",
-                "Ocorreu um error inesperado",
-                request.getDescription(false).replace("uri=", "")
-        );
-        errorResponse.setErrorCode("INTERNAL_ERROR");
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleGenericException(Exception ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Ocorreu um erro inesperado");
+        response.put("errorCode", "INTERNAL_ERROR");
+        return response;
     }
-    
-    // @ExceptionHandler(BusinessException.class)
-    // public ResponseEntity<CustomErrorResponse> handleBusinessException(BusinessException ex) {
-    //     CustomErrorResponse errorResponse = new CustomErrorResponse(
-    //             HttpStatus.BAD_REQUEST.value(),
-    //             "Error de regra de negócio",
-    //             ex.getMessage(),
-    //             LocalDateTime.now());
 
-    //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    // }
-
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBusinessException(BusinessException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return response;
+    }
 }

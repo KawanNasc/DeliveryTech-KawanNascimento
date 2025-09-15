@@ -1,0 +1,8 @@
+echo   
+Gerando relatório de cobertura... 
+mvn jacoco:report 
+echo   
+Verificando cobertura mínima... 
+mvn jacoco:check 
+echo   
+pause

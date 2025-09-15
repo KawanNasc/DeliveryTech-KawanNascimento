@@ -19,6 +19,9 @@ public class ClientDTORequest {
     @Size(max = 200, message = "Endereço deve ter no máx. 200 caracteres")
     private String address;
 
+    @NotBlank(message = "CPF é obrigatório")
+    private String cpf;
+
     // Getters e Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -31,4 +34,7 @@ public class ClientDTORequest {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 }

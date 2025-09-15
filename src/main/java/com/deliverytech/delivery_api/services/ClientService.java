@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +27,11 @@ public class ClientService {
         // Validar e-mail único
         if (clientRepository.existsByEmail(client.getEmail())) {
             throw new IllegalArgumentException("E-mail já cadastrado: " + client.getEmail());
+        }
+
+        if (clientRepository.existsByCpf(client.getCpf())) {
+            // If it exists, throw a custom exception
+            throw new IllegalArgumentException("CPF já cadastrado");
         }
 
         // Validações de negócio
@@ -49,8 +57,8 @@ public class ClientService {
 
     // Listar todos os clientes ativos
     @Transactional(readOnly = true)
-    public List<Client> listActive() {
-        return clientRepository.findByActiveTrue();
+    public Page<Client> listActive(Pageable pageable) {
+        return clientRepository.findByActiveTrue(pageable);
     }
 
     // Atualizar dados do cliente

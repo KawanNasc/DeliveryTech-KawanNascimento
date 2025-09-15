@@ -60,7 +60,7 @@ public class AuthController {
                             "id": 1,
                             "nome": "João Silva",
                             "email": "joao@email.com",
-                            "role": "CLIENTE"
+                            "role": "CLIENT"
                         }
                     }
                     """))),

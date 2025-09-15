@@ -6,6 +6,7 @@ public class ClientDTOResponse {
     private String email;
     private String phone;
     private String address;
+    private String cpf;
     private boolean active;
 
     // Getters e Setters
@@ -23,6 +24,9 @@ public class ClientDTOResponse {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }

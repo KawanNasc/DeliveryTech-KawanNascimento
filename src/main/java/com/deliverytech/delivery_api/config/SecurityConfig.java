@@ -27,21 +27,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public Endpoints
-                        .requestMatchers("/api/auth/**", "/api/restaurantes", "/api/produtos").permitAll()
-
-                        // Health Check
-                        .requestMatchers("/health", "/info").permitAll()
-
-                        // H2 Console (Development only)
-                        .requestMatchers("/h2-console/**").permitAll()
-
-                        // Swagger/OpenAPI endpoints - IMPORTANT!
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-resources/**",
-                                "/webjars/**")
+                        .requestMatchers(
+                                "/api/auth",
+                                "/api/client",
+                                "/api/product",
+                                "/api/request",
+                                "/api/restaurant",
+                                "/h2-console/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
-
-                        // All other endpoints require authentication
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

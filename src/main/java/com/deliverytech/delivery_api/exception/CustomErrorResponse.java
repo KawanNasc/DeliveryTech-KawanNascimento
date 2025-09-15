@@ -1,12 +1,7 @@
 package com.deliverytech.delivery_api.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.time.LocalDateTime;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomErrorResponse {
     private int status;
     private String error;
@@ -15,11 +10,6 @@ public class CustomErrorResponse {
     private String errorCode;
     private Map<String, String> details;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime timestamp;
-
-    public CustomErrorResponse() { this.timestamp = LocalDateTime.now(); }
-
     public CustomErrorResponse(int status, String error, String message, String path) {
         this.status = status;
         this.error = error;
@@ -27,25 +17,51 @@ public class CustomErrorResponse {
         this.path = path;
     }
 
-    // Getters e Setters
-    public int getStatus() { return status; }
-    public void setStatus(int status) { this.status = status; }
+    public int getStatus() {
+        return status;
+    }
 
-    public String getError() { return error; }
-    public void setError(String error) { this.error = error; }
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public String getError() {
+        return error;
+    }
 
-    public String getPath() { return path; }
-    public void setPath(String path) { this.path = path; }
+    public void setError(String error) {
+        this.error = error;
+    }
 
-    public String getErrorCode() { return errorCode; }
-    public void setErrorCode(String errorCode) { this.errorCode = errorCode; }
+    public String getMessage() {
+        return message;
+    }
 
-    public Map<String, String> getDetails() { return details; }
-    public void setDetails(Map<String, String> details) { this.details = details; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
 }

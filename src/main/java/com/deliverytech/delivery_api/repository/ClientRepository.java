@@ -2,10 +2,13 @@ package com.deliverytech.delivery_api.repository;
 
 import com.deliverytech.delivery_api.model.Client;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +22,11 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     // Verificar se o e-mail já existe
     boolean existsByEmail(String email);
 
+    // Verificar se o CPF já existe
+    boolean existsByCpf(String cpf);
+
     // Buscar clientes ativos
-    List<Client> findByActiveTrue();
+    Page<Client> findByActiveTrue(Pageable pageable);
 
     // Buscar clientes p/ nome (Contendo)
     List<Client> findByNameContainingIgnoreCase(String name);

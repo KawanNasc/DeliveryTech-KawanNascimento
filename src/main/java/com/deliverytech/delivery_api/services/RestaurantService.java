@@ -1,6 +1,5 @@
 package com.deliverytech.delivery_api.services;
 
-import com.deliverytech.delivery_api.data.response.RestaurantDTOResponse;
 import com.deliverytech.delivery_api.model.Restaurant;
 
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
